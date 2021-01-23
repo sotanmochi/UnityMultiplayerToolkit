@@ -39,6 +39,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 _Instance = this;
                 DontDestroyOnLoad(this.gameObject);
                 Application.runInBackground = true;
+                Application.targetFrameRate = 60;
             }
         }
 
