@@ -1,0 +1,9 @@
+{
+    "dependencies": {},
+    "description": "Samples for Unity Multiplayer Toolkit",
+    "displayName": "UnityMultiplayerToolkit.Samples",
+    "license": "MIT",
+    "name": "com.sotanmochi.unity-multiplayer-toolkit.samples",
+    "unity": "2019.4",
+    "version": "0.1.0"
+}

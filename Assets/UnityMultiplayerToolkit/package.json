@@ -1,0 +1,9 @@
+{
+    "dependencies": {},
+    "description": "Multiplayer toolkit for Unity",
+    "displayName": "UnityMultiplayerToolkit",
+    "license": "MIT",
+    "name": "com.sotanmochi.unity-multiplayer-toolkit",
+    "unity": "2019.4",
+    "version": "0.1.0"
+}
