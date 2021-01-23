@@ -23,6 +23,9 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public bool Initialized => _Initialized;
         private bool _Initialized;
 
+        public bool Connected => _Connected;
+        private bool _Connected;
+
         private MLAPIClient _Instance;
 
         private void Awake()
@@ -169,7 +172,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             SocketTasks tasks = MLAPI.NetworkingManager.Singleton.StartClient();
             await UniTask.WaitUntil(() => tasks.IsDone);
 
-            return MLAPI.NetworkingManager.Singleton.IsConnectedClient;
+            return _Connected = tasks.Success;
         }
 
         public void Disconnect()
