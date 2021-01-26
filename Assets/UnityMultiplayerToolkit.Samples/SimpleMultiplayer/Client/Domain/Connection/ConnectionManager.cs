@@ -2,7 +2,7 @@
 using UniRx;
 using UnityMultiplayerToolkit.MLAPIExtension;
 
-namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
+namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
 {
     public class ConnectionManager : MonoBehaviour
     {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UniRx;
 
-namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
+namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
 {
     public class ConnectionPresenter : MonoBehaviour
     {
