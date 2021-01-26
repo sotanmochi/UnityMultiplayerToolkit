@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
 
-namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
+namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
 {
     public class ConnectionView : MonoBehaviour
     {
