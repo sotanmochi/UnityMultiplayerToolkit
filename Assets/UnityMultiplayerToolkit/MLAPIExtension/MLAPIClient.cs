@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
 using MLAPI.Transports;
 using MLAPI.Transports.Tasks;
+using MLAPI.Messaging;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
@@ -177,6 +179,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
         public void Disconnect()
         {
+            _Connected = false;
             if (MLAPI.NetworkingManager.Singleton.IsClient)
             {
                 MLAPI.NetworkingManager.Singleton.StopClient();
@@ -188,6 +191,19 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             else
             {
                 Debug.LogWarning("[MLAPI Extension] Cannot disconnect client because it is not running.");
+            }
+        }
+
+        public void SendMessageToServer(string messageName, Stream dataStream, string channel = null)
+        {
+            if (_Connected)
+            {
+                ulong serverClientId = MLAPI.NetworkingManager.Singleton.ServerClientId;
+                CustomMessagingManager.SendNamedMessage(messageName, serverClientId, dataStream, channel);
+            }
+            else
+            {
+                Debug.LogError("[MLAPI Extension] Cannot send message to server until connected.");
             }
         }
 
