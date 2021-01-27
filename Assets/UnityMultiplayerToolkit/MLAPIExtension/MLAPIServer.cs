@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
 using MLAPI.Transports;
 using MLAPI.Transports.Tasks;
+using MLAPI.Messaging;
+using MLAPI.Security;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
@@ -147,6 +152,20 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             {
                 Debug.LogWarning("[MLAPI Extension] Cannot stop server because it is not running.");
             }
+        }
+
+        public void SendMessageToAllClients(string messageName, Stream dataStream, string channel = null, SecuritySendFlags security = SecuritySendFlags.None)
+        {
+            List<ulong> clientIds = MLAPI.NetworkingManager.Singleton.ConnectedClientsList.Select(client => client.ClientId).ToList<ulong>();
+            CustomMessagingManager.SendNamedMessage(messageName, clientIds, dataStream, channel, security);
+        }
+
+        public void SendMessageToAllClientsExcept(string messageName, ulong clientIdToIgnore, Stream dataStream, string channel = null, SecuritySendFlags security = SecuritySendFlags.None)
+        {
+            List<ulong> clientIds = MLAPI.NetworkingManager.Singleton.ConnectedClientsList
+                                    .Where(client => client.ClientId != clientIdToIgnore)
+                                    .Select(client => client.ClientId).ToList<ulong>();
+            CustomMessagingManager.SendNamedMessage(messageName, clientIds, dataStream, channel, security);
         }
 
 #region Callbacks
