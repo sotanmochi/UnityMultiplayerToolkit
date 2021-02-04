@@ -1091,7 +1091,7 @@ RectTransform:
   - {fileID: 1989153602}
   - {fileID: 1170846669}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1253,7 +1253,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22457152, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 22457152, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -2070,7 +2070,7 @@ GameObject:
   - component: {fileID: 1277662244}
   - component: {fileID: 1277662243}
   m_Layer: 0
-  m_Name: MLAPIClient
+  m_Name: NetworkClient
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2120,7 +2120,10 @@ MonoBehaviour:
     RegisteredScenes:
     - Client
     AllowRuntimeSceneChanges: 0
-    NetworkedPrefabs: []
+    NetworkedPrefabs:
+    - Prefab: {fileID: 3246152817007880802, guid: 505b75ccc2d35e841a2bb93a0d1251ce,
+        type: 3}
+      PlayerPrefab: 0
     PlayerPrefabHash:
       Value: 0
     CreatePlayerPrefab: 1
@@ -2333,7 +2336,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1467825565
 GameObject:
@@ -2750,6 +2753,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1594496572}
   m_CullTransparentMesh: 0
+--- !u!1 &1682832504
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1682832506}
+  - component: {fileID: 1682832505}
+  m_Layer: 0
+  m_Name: PlayerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1682832505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682832504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 512bdc6bfebefa742bbde59fca64fc3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _NetworkingManagerExtension: {fileID: 1277662245}
+  _NetworkedPlayerPrefab: {fileID: 5780850208944088252, guid: 505b75ccc2d35e841a2bb93a0d1251ce,
+    type: 3}
+  _Players:
+    m_keys: 
+    m_values: []
+--- !u!4 &1682832506
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682832504}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1711483504
 GameObject:
   m_ObjectHideFlags: 0
@@ -2825,7 +2877,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1760683295
 MonoBehaviour:
