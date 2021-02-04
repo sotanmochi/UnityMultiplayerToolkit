@@ -1,18 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
+using MLAPI;
 using MLAPI.Transports;
 using MLAPI.Transports.Tasks;
 using MLAPI.Messaging;
+using MLAPI.Spawning;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
     [AddComponentMenu("MLAPI Extension/MLAPIClient")]
     [RequireComponent(typeof(MLAPI.NetworkingManager))]
-    public class MLAPIClient : MonoBehaviour
+    public class MLAPIClient : MonoBehaviour, INetworkingManagerExtension
     {
+        public bool IsServer => false;
+        public bool IsClient => true;
+        public bool IsRunning => MLAPI.NetworkingManager.Singleton.IsClient;
+
         public IObservable<Unit> OnHostStartedAsObservable() => _OnHostStartedSubject;
         private Subject<Unit> _OnHostStartedSubject = new Subject<Unit>();
 
@@ -22,13 +30,20 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<ulong> OnClientDisconnectedAsObservable() => _OnClientDisconnectedSubject;
         private Subject<ulong> _OnClientDisconnectedSubject = new Subject<ulong>();
 
+        public IObservable<List<NetworkedObject>> OnSpawnedObjectsAsObservable() => _OnSpawnedObjectsSubject;
+        private Subject<List<NetworkedObject>> _OnSpawnedObjectsSubject = new Subject<List<NetworkedObject>>();
+
+        public IObservable<List<ulong>> OnDestroyedObjectsAsObservable() => _OnDestroyedObjectsSubject;
+        private Subject<List<ulong>> _OnDestroyedObjectsSubject = new Subject<List<ulong>>();
+
         public bool Initialized => _Initialized;
         private bool _Initialized;
 
         public bool Connected => _Connected;
         private bool _Connected;
 
-        private MLAPIClient _Instance;
+        private CompositeDisposable _CompositeDisposable;
+        private MLAPIClient _Instance; // Singleton instance
 
         private void Awake()
         {
@@ -40,8 +55,18 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             {
                 _Instance = this;
                 DontDestroyOnLoad(this.gameObject);
+                _CompositeDisposable = new CompositeDisposable();
                 Application.runInBackground = true;
                 Application.targetFrameRate = 60;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_Instance != null && _Instance == this)
+            {
+                _Instance = null;
+                _CompositeDisposable.Dispose();
             }
         }
 
@@ -111,6 +136,8 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 return false;
             }
 
+            SubscribeSpawnedObjects();
+
             // Callbacks
             MLAPI.NetworkingManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
             MLAPI.NetworkingManager.Singleton.OnServerStarted += OnServerStarted;
@@ -165,6 +192,8 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 Debug.LogWarning("[MLAPI Extension] This client is already connected to the server.");
                 return true;
             }
+
+            SubscribeSpawnedObjects();
 
             // Callbacks
             MLAPI.NetworkingManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -230,6 +259,43 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         }
 
 #endregion
+
+        private void SubscribeSpawnedObjects()
+        {
+            var beforeKeys = new ulong[0];
+
+            SpawnManager.SpawnedObjects
+            .ObserveEveryValueChanged(dict => dict.Count)
+            .Skip(1)
+            .Subscribe(count => 
+            {
+                var spawnedObjKeys = SpawnManager.SpawnedObjects.Keys.Except(beforeKeys);
+                var destroyedObjKeys = beforeKeys.Except(SpawnManager.SpawnedObjects.Keys);
+
+                beforeKeys = SpawnManager.SpawnedObjects.Keys.ToArray();
+
+                List<NetworkedObject> spawnedObjects = new List<NetworkedObject>();
+                foreach(var key in spawnedObjKeys)
+                {
+                    if (SpawnManager.SpawnedObjects.TryGetValue(key, out NetworkedObject netObject))
+                    {
+                        spawnedObjects.Add(netObject);
+                    }
+                }
+
+                List<ulong> destroyedObjectIds = destroyedObjKeys.ToList();
+
+                if (spawnedObjects.Count > 0)
+                {
+                    _OnSpawnedObjectsSubject.OnNext(spawnedObjects);
+                }
+                if (destroyedObjectIds.Count > 0)
+                {
+                    _OnDestroyedObjectsSubject.OnNext(destroyedObjectIds);
+                }
+            })
+            .AddTo(_CompositeDisposable);
+        }
 
     }
 }

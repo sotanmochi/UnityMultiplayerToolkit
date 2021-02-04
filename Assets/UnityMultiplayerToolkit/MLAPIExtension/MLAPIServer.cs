@@ -5,19 +5,25 @@ using System.Linq;
 using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
+using MLAPI;
 using MLAPI.Transports;
 using MLAPI.Transports.Tasks;
 using MLAPI.Messaging;
 using MLAPI.Security;
+using MLAPI.Spawning;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
     [AddComponentMenu("MLAPI Extension/MLAPIServer")]
     [RequireComponent(typeof(MLAPI.NetworkingManager))]
-    public class MLAPIServer : MonoBehaviour
+    public class MLAPIServer : MonoBehaviour, INetworkingManagerExtension
     {
-        public bool AutoStart;
+        public bool AutoStart = true;
         [SerializeField] NetworkConfig _NetworkConfig;
+
+        public bool IsServer => true;
+        public bool IsClient => false;
+        public bool IsRunning => MLAPI.NetworkingManager.Singleton.IsServer;
 
         public IObservable<Unit> OnServerStartedAsObservable() => _OnServerStartedSubject;
         private Subject<Unit> _OnServerStartedSubject = new Subject<Unit>();
@@ -28,10 +34,16 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<ulong> OnClientDisconnectedAsObservable() => _OnClientDisconnectedSubject;
         private Subject<ulong> _OnClientDisconnectedSubject = new Subject<ulong>();
 
-        public bool IsRunning => MLAPI.NetworkingManager.Singleton.IsServer;
+        public IObservable<List<NetworkedObject>> OnSpawnedObjectsAsObservable() => _OnSpawnedObjectsSubject;
+        private Subject<List<NetworkedObject>> _OnSpawnedObjectsSubject = new Subject<List<NetworkedObject>>();
+
+        public IObservable<List<ulong>> OnDestroyedObjectsAsObservable() => _OnDestroyedObjectsSubject;
+        private Subject<List<ulong>> _OnDestroyedObjectsSubject = new Subject<List<ulong>>();
 
         private ConnectionConfig _ConnectionConfig;
-        private MLAPIServer _Instance;
+
+        private CompositeDisposable _CompositeDisposable;
+        private MLAPIServer _Instance; // Singleton instance
 
         private void Awake()
         {
@@ -43,6 +55,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             {
                 _Instance = this;
                 DontDestroyOnLoad(this.gameObject);
+                _CompositeDisposable = new CompositeDisposable();
                 Application.runInBackground = true;
                 Application.targetFrameRate = 60;
             }
@@ -68,6 +81,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             if (_Instance != null && _Instance == this)
             {
                 _Instance = null;
+                _CompositeDisposable.Dispose();
                 StopServer();
             }
         }
@@ -118,6 +132,8 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 Debug.LogError("[MLAPI Extension] Unknown transport.");
                 return false;
             }
+
+            SubscribeSpawnedObjects();
 
             // Callbacks
             MLAPI.NetworkingManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
@@ -193,6 +209,43 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         }
 
 #endregion
+
+        private void SubscribeSpawnedObjects()
+        {
+            var beforeKeys = new ulong[0];
+
+            SpawnManager.SpawnedObjects
+            .ObserveEveryValueChanged(dict => dict.Count)
+            .Skip(1)
+            .Subscribe(count => 
+            {
+                var spawnedObjKeys = SpawnManager.SpawnedObjects.Keys.Except(beforeKeys);
+                var destroyedObjKeys = beforeKeys.Except(SpawnManager.SpawnedObjects.Keys);
+
+                beforeKeys = SpawnManager.SpawnedObjects.Keys.ToArray();
+
+                List<NetworkedObject> spawnedObjects = new List<NetworkedObject>();
+                foreach(var key in spawnedObjKeys)
+                {
+                    if (SpawnManager.SpawnedObjects.TryGetValue(key, out NetworkedObject netObject))
+                    {
+                        spawnedObjects.Add(netObject);
+                    }
+                }
+
+                List<ulong> destroyedObjectIds = destroyedObjKeys.ToList();
+
+                if (spawnedObjects.Count > 0)
+                {
+                    _OnSpawnedObjectsSubject.OnNext(spawnedObjects);
+                }
+                if (destroyedObjectIds.Count > 0)
+                {
+                    _OnDestroyedObjectsSubject.OnNext(destroyedObjectIds);
+                }
+            })
+            .AddTo(_CompositeDisposable);
+        }
 
     }
 }
