@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UniRx;
+using UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared;
 
 namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
 {

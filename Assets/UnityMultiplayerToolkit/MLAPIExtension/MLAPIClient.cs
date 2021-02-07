@@ -19,7 +19,14 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
     {
         public bool IsServer => false;
         public bool IsClient => true;
-        public bool IsRunning => MLAPI.NetworkingManager.Singleton.IsClient;
+        public bool IsRunning
+        {
+            get
+            {
+                if (MLAPI.NetworkingManager.Singleton != null) return MLAPI.NetworkingManager.Singleton.IsClient;
+                else return false;
+            }
+        }
 
         public IObservable<Unit> OnHostStartedAsObservable() => _OnHostStartedSubject;
         private Subject<Unit> _OnHostStartedSubject = new Subject<Unit>();
@@ -43,31 +50,15 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         private bool _Connected;
 
         private CompositeDisposable _CompositeDisposable;
-        private MLAPIClient _Instance; // Singleton instance
 
         private void Awake()
         {
-            if (_Instance != null && _Instance != this)
-            {
-                Destroy(this.gameObject);
-            }
-            else
-            {
-                _Instance = this;
-                DontDestroyOnLoad(this.gameObject);
-                _CompositeDisposable = new CompositeDisposable();
-                Application.runInBackground = true;
-                Application.targetFrameRate = 60;
-            }
+            _CompositeDisposable = new CompositeDisposable();
         }
 
         private void OnDestroy()
         {
-            if (_Instance != null && _Instance == this)
-            {
-                _Instance = null;
-                _CompositeDisposable.Dispose();
-            }
+            _CompositeDisposable.Dispose();
         }
 
         public bool Initialize(NetworkConfig networkConfig = null, ConnectionConfig connectionConfig = null)
@@ -156,7 +147,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
         public void StopHost()
         {
-            if (MLAPI.NetworkingManager.Singleton.IsHost)
+            if (MLAPI.NetworkingManager.Singleton != null && MLAPI.NetworkingManager.Singleton.IsHost)
             {
                 Debug.Log("[MLAPI Extension] MLAPI host client has stopped.");
                 MLAPI.NetworkingManager.Singleton.StopHost();
@@ -209,7 +200,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public void Disconnect()
         {
             _Connected = false;
-            if (MLAPI.NetworkingManager.Singleton.IsClient)
+            if (MLAPI.NetworkingManager.Singleton != null && MLAPI.NetworkingManager.Singleton.IsClient)
             {
                 MLAPI.NetworkingManager.Singleton.StopClient();
 
