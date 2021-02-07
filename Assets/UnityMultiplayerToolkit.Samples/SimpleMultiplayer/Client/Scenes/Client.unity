@@ -668,10 +668,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 623978590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2e07d003a2d9ab4dbb62316df79070f, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ec86d13940b6154e84ca429c593c771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _MLAPIClient: {fileID: 1277662245}
+  _NetworkingManagerExtension: {fileID: 1277662245}
 --- !u!1 &624485790
 GameObject:
   m_ObjectHideFlags: 0
@@ -2785,9 +2785,6 @@ MonoBehaviour:
   _NetworkingManagerExtension: {fileID: 1277662245}
   _NetworkedPlayerPrefab: {fileID: 5780850208944088252, guid: 505b75ccc2d35e841a2bb93a0d1251ce,
     type: 3}
-  _Players:
-    m_keys: 
-    m_values: []
 --- !u!4 &1682832506
 Transform:
   m_ObjectHideFlags: 0

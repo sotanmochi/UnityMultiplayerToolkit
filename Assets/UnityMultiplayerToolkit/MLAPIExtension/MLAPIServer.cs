@@ -18,12 +18,19 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
     [RequireComponent(typeof(MLAPI.NetworkingManager))]
     public class MLAPIServer : MonoBehaviour, INetworkingManagerExtension
     {
-        public bool AutoStart = true;
+        [SerializeField] bool _AutoStart = true;
         [SerializeField] NetworkConfig _NetworkConfig;
 
         public bool IsServer => true;
         public bool IsClient => false;
-        public bool IsRunning => MLAPI.NetworkingManager.Singleton.IsServer;
+        public bool IsRunning
+        {
+            get
+            {
+                if (MLAPI.NetworkingManager.Singleton != null) return MLAPI.NetworkingManager.Singleton.IsServer;
+                else return false;
+            }
+        }
 
         public IObservable<Unit> OnServerStartedAsObservable() => _OnServerStartedSubject;
         private Subject<Unit> _OnServerStartedSubject = new Subject<Unit>();
@@ -43,30 +50,18 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         private ConnectionConfig _ConnectionConfig;
 
         private CompositeDisposable _CompositeDisposable;
-        private MLAPIServer _Instance; // Singleton instance
 
         private void Awake()
         {
-            if (_Instance != null && _Instance != this)
-            {
-                Destroy(this.gameObject);
-            }
-            else
-            {
-                _Instance = this;
-                DontDestroyOnLoad(this.gameObject);
-                _CompositeDisposable = new CompositeDisposable();
-                Application.runInBackground = true;
-                Application.targetFrameRate = 60;
-            }
+            _CompositeDisposable = new CompositeDisposable();
         }
 
         private async void Start()
         {
 #if UNITY_SERVER
-            AutoStart = true;
+            _AutoStart = true;
 #endif
-            if (AutoStart)
+            if (_AutoStart)
             {
                 bool success = await StartServer(_NetworkConfig);
                 if (success)
@@ -78,12 +73,8 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
         private void OnDestroy()
         {
-            if (_Instance != null && _Instance == this)
-            {
-                _Instance = null;
-                _CompositeDisposable.Dispose();
-                StopServer();
-            }
+            _CompositeDisposable.Dispose();
+            StopServer();
         }
 
         public async UniTask<bool> StartServer(NetworkConfig networkConfig = null, ConnectionConfig connectionConfig = null)
@@ -153,7 +144,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
         public void StopServer()
         {
-            if (MLAPI.NetworkingManager.Singleton.IsServer)
+            if (MLAPI.NetworkingManager.Singleton != null && MLAPI.NetworkingManager.Singleton.IsServer)
             {
                 MLAPI.NetworkingManager.Singleton.StopServer();
                 Debug.Log("[MLAPI Extension] MLAPI Server has stopped.");
