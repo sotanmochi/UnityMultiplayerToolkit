@@ -7,6 +7,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
     public class ConnectionManager : MonoBehaviour
     {
         [SerializeField] NetworkConfig _NetworkConfig;
+        [SerializeField] ConnectionConfig _ConnectionConfig;
         [SerializeField] MLAPIClient _Client;
         public bool IsHost;
 
@@ -35,7 +36,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
 
         void Start()
         {
-            _Client.Initialize(_NetworkConfig);
+            _Client.Initialize(_NetworkConfig, _ConnectionConfig);
         }
 
         void OnDestroy()
