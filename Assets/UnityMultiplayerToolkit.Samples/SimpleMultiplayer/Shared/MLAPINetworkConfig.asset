@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MLAPINetworkConfig
   m_EditorClassIdentifier: 
   EnableSceneManagement: 0
-  ConnectionApproval: 0
+  ConnectionApproval: 1
   CreatePlayerPrefab: 0
   ForceSamePrefabs: 0
   RecycleNetworkIds: 0

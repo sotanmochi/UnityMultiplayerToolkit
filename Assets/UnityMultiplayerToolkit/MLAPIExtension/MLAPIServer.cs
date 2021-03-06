@@ -11,6 +11,7 @@ using MLAPI.Transports.Tasks;
 using MLAPI.Messaging;
 using MLAPI.Security;
 using MLAPI.Spawning;
+using MLAPI.Serialization.Pooled;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
@@ -75,6 +76,17 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         {
             _CompositeDisposable.Dispose();
             StopServer();
+        }
+
+        public async void ApplicationQuit(int timeSeconds = 60)
+        {
+            string message = "The connected server process is going down in " + timeSeconds + "seconds.";
+
+            Debug.Log(message);
+            NotifyServerProcessDownToAllClients(message);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(timeSeconds));
+            Application.Quit();
         }
 
         public async UniTask<bool> StartServer(NetworkConfig networkConfig = null, ConnectionConfig connectionConfig = null)
@@ -161,6 +173,20 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
         }
 
+        public void NotifyServerProcessDownToAllClients(string message, string channel = null, SecuritySendFlags security = SecuritySendFlags.None)
+        {
+            using (PooledBitStream outputStream = PooledBitStream.Get())
+            {
+                using (PooledBitWriter writer = PooledBitWriter.Get(outputStream))
+                {
+                    writer.WriteStringPacked(message);
+                }
+
+                List<ulong> clientIds = MLAPI.NetworkingManager.Singleton.ConnectedClientsList.Select(client => client.ClientId).ToList<ulong>();
+                CustomMessagingManager.SendNamedMessage("NotifyServerProcessDown", clientIds, outputStream, channel, security);
+            }
+        }
+
         public void SendMessageToAllClients(string messageName, Stream dataStream, string channel = null, SecuritySendFlags security = SecuritySendFlags.None)
         {
             List<ulong> clientIds = MLAPI.NetworkingManager.Singleton.ConnectedClientsList.Select(client => client.ClientId).ToList<ulong>();
@@ -179,7 +205,13 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
         private void ApprovalCheck(byte[] connectionData, ulong clientId, MLAPI.NetworkingManager.ConnectionApprovedDelegate callback)
         {
-            Debug.LogError("[MLAPI Extension] ConnectionApprovalCallback has not implemented.");
+            string connectionKey = System.Text.Encoding.ASCII.GetString(connectionData);
+            bool approved = connectionKey.Equals(_ConnectionConfig.Key);
+
+            Debug.Log("[MLAPI Extension] Client.ConnectionKey: " + connectionKey);
+            Debug.Log("[MLAPI Extension] ConnectionConfig.Key: " + _ConnectionConfig.Key);
+
+            callback(false, null, approved, null, null);
         }
 
         private void OnServerStarted()

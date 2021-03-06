@@ -54,6 +54,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
         {
             if (_Server != null)
             {
+                CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_SERVER_PROCESS_DOWN_COMMAND, MessageHandler_Server_SendServerProcessDownCommand);
                 CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_SERVER, MessageHandler_Server_SendTextMessageToServer);
                 CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_ALL_CLIENTS, MessageHandler_Server_SendTextMessageToAllClients);
                 CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_CLIENTS_EXCEPT_SELF, MessageHandler_Server_SendTextMessageExceptSelf);
@@ -68,12 +69,22 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         void UnregisterNamedMessageHandlers()
         {
+            CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_SERVER_PROCESS_DOWN_COMMAND);
             CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_SERVER);
             CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_ALL_CLIENTS);
             CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_CLIENTS_EXCEPT_SELF);
         }
 
 #region Message Handlers for Server
+
+        private void MessageHandler_Server_SendServerProcessDownCommand(ulong senderClientId, Stream dataStream)
+        {
+            using (PooledBitReader reader = PooledBitReader.Get(dataStream))
+            {
+                int timeSeconds = reader.ReadInt32Packed();
+                _Server.ApplicationQuit(timeSeconds);
+            }
+        }
 
         private void MessageHandler_Server_SendTextMessageToServer(ulong senderClientId, Stream dataStream)
         {
@@ -151,6 +162,18 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 #endregion
 
 #region Client Method
+
+        public void SendServerProcessDownCommand(int timeSeconds)
+        {
+            using (PooledBitStream stream = PooledBitStream.Get())
+            {
+                using (PooledBitWriter writer = PooledBitWriter.Get(stream))
+                {
+                    writer.WriteInt32Packed(timeSeconds);
+                    _Client.SendMessageToServer(MessagingHubConstants.SEND_SERVER_PROCESS_DOWN_COMMAND, stream);
+                }
+            }
+        }
 
         public void SendTextMessageToServer(string message)
         {

@@ -10,6 +10,7 @@ using MLAPI.Transports;
 using MLAPI.Transports.Tasks;
 using MLAPI.Messaging;
 using MLAPI.Spawning;
+using MLAPI.Serialization.Pooled;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
@@ -37,6 +38,9 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<ulong> OnClientDisconnectedAsObservable() => _OnClientDisconnectedSubject;
         private Subject<ulong> _OnClientDisconnectedSubject = new Subject<ulong>();
 
+        public IObservable<string> OnReceivedServerProcessDownEventAsObservable() => _OnReceivedServerProcessDownEventSubject;
+        private Subject<string> _OnReceivedServerProcessDownEventSubject = new Subject<string>();
+
         public IObservable<List<NetworkedObject>> OnSpawnedObjectsAsObservable() => _OnSpawnedObjectsSubject;
         private Subject<List<NetworkedObject>> _OnSpawnedObjectsSubject = new Subject<List<NetworkedObject>>();
 
@@ -49,15 +53,19 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public bool Connected => _Connected;
         private bool _Connected;
 
+        private string _ConnectionKey;
+
         private CompositeDisposable _CompositeDisposable;
 
         private void Awake()
         {
             _CompositeDisposable = new CompositeDisposable();
+            CustomMessagingManager.RegisterNamedMessageHandler("NotifyServerProcessDown", OnReceivedServerProcessDownEvent);
         }
 
         private void OnDestroy()
         {
+            CustomMessagingManager.UnregisterNamedMessageHandler("NotifyServerProcessDown");
             _CompositeDisposable.Dispose();
         }
 
@@ -102,6 +110,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 return false;
             }
 
+            _ConnectionKey = connectionConfig.Key;
             _Initialized = true;
 
             return true;
@@ -191,6 +200,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             MLAPI.NetworkingManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
 
             // Start client
+            MLAPI.NetworkingManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes(_ConnectionKey);
             SocketTasks tasks = MLAPI.NetworkingManager.Singleton.StartClient();
             await UniTask.WaitUntil(() => tasks.IsDone);
 
@@ -247,6 +257,15 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         private void OnClientDisconnected(ulong clientId)
         {
             _OnClientDisconnectedSubject.OnNext(clientId);
+        }
+
+        private void OnReceivedServerProcessDownEvent(ulong sender, Stream dataStream)
+        {
+            using (PooledBitReader reader = PooledBitReader.Get(dataStream))
+            {
+                string message = reader.ReadStringPacked().ToString();
+                _OnReceivedServerProcessDownEventSubject.OnNext(message);
+            }
         }
 
 #endregion
