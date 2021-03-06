@@ -64,7 +64,27 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 #endif
             if (_AutoStart)
             {
-                bool success = await StartServer(_NetworkConfig);
+                int listeningPort = 7777;
+                string roomKey = "MultiplayerRoom";
+
+                string[] args = System.Environment.GetCommandLineArgs();
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i] == "--port")
+                    {
+                        listeningPort = int.Parse(args[i + 1]);
+                    }
+                    if (args[i] == "--room")
+                    {
+                        roomKey = args[i + 1];
+                    }
+                }
+
+                ConnectionConfig connectionConfig = ConnectionConfig.GetDefault();
+                connectionConfig.Port = listeningPort;
+                connectionConfig.Key = roomKey;
+
+                bool success = await StartServer(_NetworkConfig, connectionConfig);
                 if (success)
                 {
                     Debug.Log("[MLAPI Extension] MLAPI Server has started. Port: " + _ConnectionConfig.Port);
@@ -103,7 +123,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
             if (connectionConfig == null)
             {
-                connectionConfig = ConnectionConfig.LoadConfigFile();
+                connectionConfig = ConnectionConfig.GetDefault();
             }
 
             _ConnectionConfig = connectionConfig;

@@ -759,6 +759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _NetworkConfig: {fileID: 11400000, guid: edb2274b869987444be146f26271fc2f, type: 2}
+  _ConnectionConfig: {fileID: 11400000, guid: d388b741b15a65843bd0d89628d4b939, type: 2}
   _Client: {fileID: 1277662245}
   IsHost: 0
 --- !u!4 &623978592

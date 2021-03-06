@@ -79,7 +79,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
             if (connectionConfig == null)
             {
-                connectionConfig = ConnectionConfig.LoadConfigFile();
+                connectionConfig = ConnectionConfig.GetDefault();
             }
 
             // Network config
