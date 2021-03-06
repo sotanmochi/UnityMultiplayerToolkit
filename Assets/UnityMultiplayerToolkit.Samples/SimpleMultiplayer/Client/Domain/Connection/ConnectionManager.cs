@@ -25,6 +25,12 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
                 Debug.Log("[SimpleMultiplayer] Disconnected client id: " + clientId);
             })
             .AddTo(this);
+
+            _Client.OnReceivedServerProcessDownEventAsObservable()
+            .Subscribe(message => 
+            {
+                Debug.Log(message);
+            });
         }
 
         void Start()
