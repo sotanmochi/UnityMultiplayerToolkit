@@ -48,7 +48,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<List<ulong>> OnDestroyedObjectsAsObservable() => _OnDestroyedObjectsSubject;
         private Subject<List<ulong>> _OnDestroyedObjectsSubject = new Subject<List<ulong>>();
 
-        private ConnectionConfig _ConnectionConfig;
+        private MLAPIConnectionConfig _ConnectionConfig;
 
         private CompositeDisposable _CompositeDisposable;
 
@@ -80,7 +80,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                     }
                 }
 
-                ConnectionConfig connectionConfig = ConnectionConfig.GetDefault();
+                MLAPIConnectionConfig connectionConfig = MLAPIConnectionConfig.GetDefault();
                 connectionConfig.Port = listeningPort;
                 connectionConfig.Key = roomKey;
 
@@ -109,7 +109,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             Application.Quit();
         }
 
-        public async UniTask<bool> StartServer(NetworkConfig networkConfig = null, ConnectionConfig connectionConfig = null)
+        public async UniTask<bool> StartServer(NetworkConfig networkConfig = null, MLAPIConnectionConfig connectionConfig = null)
         {
             if (MLAPI.NetworkingManager.Singleton.IsServer)
             {
@@ -123,7 +123,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
             if (connectionConfig == null)
             {
-                connectionConfig = ConnectionConfig.GetDefault();
+                connectionConfig = MLAPIConnectionConfig.GetDefault();
             }
 
             _ConnectionConfig = connectionConfig;

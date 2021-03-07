@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 
-namespace UnityMultiplayerToolkit.MLAPIExtension
+namespace UnityMultiplayerToolkit
 {
     [System.Serializable]
-    [CreateAssetMenu(menuName = "Unity Multiplayer Toolkit/MLAPI/Create Connection Config", fileName = "MLAPIConnectionConfig")]
+    [CreateAssetMenu(menuName = "Unity Multiplayer Toolkit/Create Connection Config", fileName = "ConnectionConfig")]
     public class ConnectionConfig : ScriptableObject
     {
         public string Address = "127.0.0.1";
