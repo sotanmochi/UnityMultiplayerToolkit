@@ -69,7 +69,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             _CompositeDisposable.Dispose();
         }
 
-        public bool Initialize(NetworkConfig networkConfig = null, ConnectionConfig connectionConfig = null)
+        public bool Initialize(NetworkConfig networkConfig = null, MLAPIConnectionConfig connectionConfig = null)
         {
             _Initialized = false;
 
@@ -79,7 +79,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
             if (connectionConfig == null)
             {
-                connectionConfig = ConnectionConfig.GetDefault();
+                connectionConfig = MLAPIConnectionConfig.GetDefault();
             }
 
             // Network config
