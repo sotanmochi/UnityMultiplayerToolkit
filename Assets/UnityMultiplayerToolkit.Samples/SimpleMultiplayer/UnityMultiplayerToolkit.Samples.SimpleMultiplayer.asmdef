@@ -1,9 +1,9 @@
 {
     "name": "UnityMultiplayerToolkit.Samples.SimpleMultiplayer",
     "references": [
-        "UnityMultiplayerToolkit.MLAPIExtension",
         "UniRx",
-        "UniTask"
+        "UniTask",
+        "UnityMultiplayerToolkit"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
