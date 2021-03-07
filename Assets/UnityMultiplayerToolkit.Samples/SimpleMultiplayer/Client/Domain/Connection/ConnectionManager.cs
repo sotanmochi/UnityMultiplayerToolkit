@@ -34,11 +34,6 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
             });
         }
 
-        void Start()
-        {
-            _Client.Initialize(_NetworkConfig, _ConnectionConfig);
-        }
-
         void OnDestroy()
         {
             if (IsHost)
@@ -49,6 +44,14 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
             {
                 _Client.Disconnect();
             }
+        }
+
+        public void Initialize(ConnectionConfig config)
+        {
+            _ConnectionConfig.Address = config.Address;
+            _ConnectionConfig.Port = config.Port;
+            _ConnectionConfig.Key = config.Key;
+            _Client.Initialize(_NetworkConfig, _ConnectionConfig);
         }
 
         public async void StartClient()

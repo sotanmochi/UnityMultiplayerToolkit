@@ -10,6 +10,16 @@ namespace UnityMultiplayerToolkit
         public int Port = 7777;
         public string Key = "MultiplayerRoom";
 
+        public ConnectionConfig()
+        {
+        }
+
+        public ConnectionConfig(string address, int port)
+        {
+            Address = address;
+            Port = port;
+        }
+
         public static ConnectionConfig GetDefault()
         {
             ConnectionConfig config = new ConnectionConfig();
