@@ -55,6 +55,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         private void Awake()
         {
             _CompositeDisposable = new CompositeDisposable();
+            SubscribeSpawnedObjects();
         }
 
         private async void Start()
@@ -155,8 +156,6 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 Debug.LogError("[MLAPI Extension] Unknown transport.");
                 return false;
             }
-
-            SubscribeSpawnedObjects();
 
             // Callbacks
             MLAPI.NetworkingManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
