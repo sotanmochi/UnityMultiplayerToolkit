@@ -60,6 +60,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         private void Awake()
         {
             _CompositeDisposable = new CompositeDisposable();
+            SubscribeSpawnedObjects();
             CustomMessagingManager.RegisterNamedMessageHandler("NotifyServerProcessDown", OnReceivedServerProcessDownEvent);
         }
 
@@ -136,8 +137,6 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 return false;
             }
 
-            SubscribeSpawnedObjects();
-
             // Callbacks
             MLAPI.NetworkingManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
             MLAPI.NetworkingManager.Singleton.OnServerStarted += OnServerStarted;
@@ -192,8 +191,6 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 Debug.LogWarning("[MLAPI Extension] This client is already connected to the server.");
                 return true;
             }
-
-            SubscribeSpawnedObjects();
 
             // Callbacks
             MLAPI.NetworkingManager.Singleton.OnClientConnectedCallback += OnClientConnected;
