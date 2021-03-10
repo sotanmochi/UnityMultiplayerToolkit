@@ -1,0 +1,7 @@
+<linker>
+    <assembly fullname="log4net" preserve="all"/>
+    <assembly fullname="AWSSDK.Lambda" preserve="all"/>
+    <assembly fullname="AWSSDK.Core" preserve="all"/>
+    <assembly fullname="AWSSDK.CognitoIdentity" preserve="all"/>
+    <assembly fullname="AWSSDK.SecurityToken" preserve="all"/>
+</linker>
