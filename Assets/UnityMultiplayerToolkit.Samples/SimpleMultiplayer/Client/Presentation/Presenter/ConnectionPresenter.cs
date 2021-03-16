@@ -11,7 +11,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
         
         private INetworkConnectionConfigProvider _ConfigProvider;
 
-        // Called from ApplicationEntryPoint.cs
+        // Called from IInitializableBeforeSceneLoad.InitializeBeforeSceneLoad()
         public void Construct(INetworkConnectionConfigProvider configProvider)
         {
             _ConfigProvider = configProvider;
