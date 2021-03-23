@@ -7,7 +7,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
     public class ConnectionManager : MonoBehaviour
     {
         [SerializeField] NetworkConfig _NetworkConfig;
-        [SerializeField] MLAPIConnectionConfig _ConnectionConfig;
+        [SerializeField] ConnectionConfig _ConnectionConfig;
         [SerializeField] NetworkClient _Client;
         public bool IsHost;
 
@@ -36,14 +36,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
 
         void OnDestroy()
         {
-            if (IsHost)
-            {
-                _Client.StopHost();
-            }
-            else
-            {
-                _Client.Disconnect();
-            }
+            _Client.Disconnect();
         }
 
         public void Initialize(ConnectionConfig config)
@@ -51,39 +44,22 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
             _ConnectionConfig.Address = config.Address;
             _ConnectionConfig.Port = config.Port;
             _ConnectionConfig.Key = config.Key;
-            _Client.Initialize(_NetworkConfig, _ConnectionConfig);
+            _Client.Construct(_NetworkConfig, _ConnectionConfig);
+            _Client.Initialize();
         }
 
         public async void StartClient()
         {
-            if (IsHost)
+            bool success = await _Client.Connect();
+            if (success)
             {
-                bool success = await _Client.StartHost();
-                if (success)
-                {
-                    Debug.Log("[SimpleMultiplayer] This client has started as a host.");
-                }
-            }
-            else
-            {
-                bool success = await _Client.Connect();
-                if (success)
-                {
-                    Debug.Log("[SimpleMultiplayer] This client has connected to the server.");
-                }
+                Debug.Log("[SimpleMultiplayer] This client has connected to the server.");
             }
         }
 
         public void StopClient()
         {
-            if (IsHost)
-            {
-                _Client.StopHost();
-            }
-            else
-            {
-                _Client.Disconnect();
-            }
+            _Client.Disconnect();
         }
     }
 }
