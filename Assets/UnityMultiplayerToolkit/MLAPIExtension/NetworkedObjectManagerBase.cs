@@ -11,14 +11,14 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         private MLAPI.NetworkedObject _NetworkedObjectPrefab;
         private Transform _NetworkedObjectParent;
 
-        public void Initialize(INetworkingManagerExtension networkingManagerExtension, MLAPI.NetworkedObject networkedObjectPrefab, Transform networkedObjectParent)
+        public void Initialize(INetworkManager networkManager, MLAPI.NetworkedObject networkedObjectPrefab, Transform networkedObjectParent)
         {
             _NetworkedObjectPrefab = networkedObjectPrefab;
             _NetworkedObjectParent = networkedObjectParent;
 
-            if (networkingManagerExtension != null)
+            if (networkManager != null)
             {
-                networkingManagerExtension.OnSpawnedObjectsAsObservable()
+                networkManager.OnSpawnedObjectsAsObservable()
                 .Subscribe(netObjects => 
                 {
                     // Debug.Log("SpawnedNetObjects: " + netObjects.Count);
@@ -35,7 +35,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 })
                 .AddTo(this);
 
-                networkingManagerExtension.OnDestroyedObjectsAsObservable()
+                networkManager.OnDestroyedObjectsAsObservable()
                 .Subscribe(destroyedObjectIds => 
                 {
                     // Debug.Log("DestroyedNetObjects: " + destroyedObjectIds.Count);

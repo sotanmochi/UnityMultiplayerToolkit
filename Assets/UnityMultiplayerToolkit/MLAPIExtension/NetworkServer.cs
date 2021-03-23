@@ -15,9 +15,9 @@ using MLAPI.Serialization.Pooled;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
-    [AddComponentMenu("MLAPI Extension/MLAPIServer")]
     [RequireComponent(typeof(MLAPI.NetworkingManager))]
-    public class MLAPIServer : MonoBehaviour, INetworkingManagerExtension
+    [AddComponentMenu("Unity Multiplayer Toolkit/MLAPI/NetworkServer")]
+    public class NetworkServer : MonoBehaviour, INetworkManager
     {
         [SerializeField] bool _AutoStart = true;
         [SerializeField] NetworkConfig _NetworkConfig;
