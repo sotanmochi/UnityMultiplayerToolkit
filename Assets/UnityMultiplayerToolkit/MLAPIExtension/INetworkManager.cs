@@ -4,7 +4,7 @@ using MLAPI;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
-    public interface INetworkingManagerExtension
+    public interface INetworkManager
     {
         bool IsServer { get; }
         bool IsClient { get; }

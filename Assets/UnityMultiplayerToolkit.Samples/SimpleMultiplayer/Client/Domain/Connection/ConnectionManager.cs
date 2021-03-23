@@ -8,7 +8,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
     {
         [SerializeField] NetworkConfig _NetworkConfig;
         [SerializeField] MLAPIConnectionConfig _ConnectionConfig;
-        [SerializeField] MLAPIClient _Client;
+        [SerializeField] NetworkClient _Client;
         public bool IsHost;
 
         void Awake()

@@ -14,9 +14,9 @@ using MLAPI.Serialization.Pooled;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
-    [AddComponentMenu("MLAPI Extension/MLAPIClient")]
     [RequireComponent(typeof(MLAPI.NetworkingManager))]
-    public class MLAPIClient : MonoBehaviour, INetworkingManagerExtension
+    [AddComponentMenu("Unity Multiplayer Toolkit/MLAPI/NetworkClient")]
+    public class NetworkClient : MonoBehaviour, INetworkManager
     {
         public bool IsServer => false;
         public bool IsClient => true;

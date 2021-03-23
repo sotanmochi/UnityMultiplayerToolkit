@@ -11,27 +11,27 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
     [AddComponentMenu("MLAPI Extension/SimpleMultiplayer/MessagingHub")]
     public class MessagingHub : MonoBehaviour
     {
-        [SerializeField] MonoBehaviour _NetworkingManagerExtension;
+        [SerializeField] MonoBehaviour _NetworkManager;
 
         public IObservable<(ulong senderId, string message)> OnReceivedTextMessageAsObservable() => _OnReceivedTextMessageSubject;
         private Subject<(ulong senderId, string message)> _OnReceivedTextMessageSubject = new Subject<(ulong senderId, string message)>();
 
-        private MLAPIServer _Server;
-        private MLAPIClient _Client;
+        private NetworkServer _Server;
+        private NetworkClient _Client;
 
         void Awake()
         {
-            INetworkingManagerExtension networkingManagerExtension = _NetworkingManagerExtension.GetComponent<INetworkingManagerExtension>();
-            if (networkingManagerExtension != null)
+            INetworkManager networkManager = _NetworkManager.GetComponent<INetworkManager>();
+            if (networkManager != null)
             {
-                if (networkingManagerExtension.IsServer)
+                if (networkManager.IsServer)
                 {
-                    _Server = _NetworkingManagerExtension.GetComponent<MLAPIServer>();
+                    _Server = _NetworkManager.GetComponent<NetworkServer>();
                     RegisterNamedMessageHandlers();
                 }
-                else if (networkingManagerExtension.IsClient)
+                else if (networkManager.IsClient)
                 {
-                    _Client = _NetworkingManagerExtension.GetComponent<MLAPIClient>();
+                    _Client = _NetworkManager.GetComponent<NetworkClient>();
                     RegisterNamedMessageHandlers();
                 }
                 else
