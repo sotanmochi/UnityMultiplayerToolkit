@@ -11,7 +11,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         bool IsRunning { get; }
         IObservable<ulong> OnClientConnectedAsObservable();
         IObservable<ulong> OnClientDisconnectedAsObservable();
-        IObservable<List<NetworkedObject>> OnSpawnedObjectsAsObservable();
-        IObservable<List<ulong>> OnDestroyedObjectsAsObservable();
+        IObservable<List<NetworkedObject>> OnNetworkedObjectSpawnedAsObservable();
+        IObservable<List<ulong>> OnNetworkedObjectDestroyedAsObservable();
     }
 }

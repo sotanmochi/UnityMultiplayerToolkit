@@ -18,7 +18,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
             if (networkManager != null)
             {
-                networkManager.OnSpawnedObjectsAsObservable()
+                networkManager.OnNetworkedObjectSpawnedAsObservable()
                 .Subscribe(netObjects => 
                 {
                     // Debug.Log("SpawnedNetObjects: " + netObjects.Count);
@@ -35,7 +35,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 })
                 .AddTo(this);
 
-                networkManager.OnDestroyedObjectsAsObservable()
+                networkManager.OnNetworkedObjectDestroyedAsObservable()
                 .Subscribe(destroyedObjectIds => 
                 {
                     // Debug.Log("DestroyedNetObjects: " + destroyedObjectIds.Count);
