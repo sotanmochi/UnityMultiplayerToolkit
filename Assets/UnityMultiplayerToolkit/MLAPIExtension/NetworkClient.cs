@@ -56,7 +56,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public bool Connected => _Connected;
         private bool _Connected;
 
-        private int _TimeoutSeconds;
+        private int _TimeoutSeconds = 30;
         private string _ConnectionKey;
 
         private NetworkConfig _NetworkConfig;

@@ -738,7 +738,6 @@ GameObject:
   m_Component:
   - component: {fileID: 391807250}
   - component: {fileID: 391807251}
-  - component: {fileID: 391807249}
   m_Layer: 0
   m_Name: ConnectionConfigProvider
   m_TagString: Untagged
@@ -746,20 +745,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &391807249
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 391807248}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48ba6d5f55906de4692ad870adb27374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _LambdaFunctionName: ClientServiceLambdaTest
-  _Config: {fileID: 0}
 --- !u!4 &391807250
 Transform:
   m_ObjectHideFlags: 0
@@ -786,7 +771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c08be26018ce341823ba6bc2e9035a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Config: {fileID: 11400000, guid: d388b741b15a65843bd0d89628d4b939, type: 2}
+  _Config: {fileID: 11400000, guid: ae35b6696ae16be4f8185c88f2ee4557, type: 2}
 --- !u!1 &458027929
 GameObject:
   m_ObjectHideFlags: 0
@@ -896,7 +881,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _NetworkConfig: {fileID: 11400000, guid: edb2274b869987444be146f26271fc2f, type: 2}
-  _ConnectionConfig: {fileID: 11400000, guid: d388b741b15a65843bd0d89628d4b939, type: 2}
+  _ConnectionConfig: {fileID: 11400000, guid: ae35b6696ae16be4f8185c88f2ee4557, type: 2}
   _Client: {fileID: 1277662245}
   IsHost: 0
 --- !u!4 &623978592
