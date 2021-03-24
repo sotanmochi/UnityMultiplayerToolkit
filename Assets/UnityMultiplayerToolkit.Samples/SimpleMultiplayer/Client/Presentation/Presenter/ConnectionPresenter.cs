@@ -9,10 +9,10 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
         [SerializeField] ConnectionView _ConnectionView;
         [SerializeField] ConnectionManager _ConnectionManager;
         
-        private INetworkConnectionConfigProvider _ConfigProvider;
+        private IConnectionConfigProvider _ConfigProvider;
 
         // Called from IInitializableBeforeSceneLoad.InitializeBeforeSceneLoad()
-        public void Construct(INetworkConnectionConfigProvider configProvider)
+        public void Construct(IConnectionConfigProvider configProvider)
         {
             _ConfigProvider = configProvider;
         }

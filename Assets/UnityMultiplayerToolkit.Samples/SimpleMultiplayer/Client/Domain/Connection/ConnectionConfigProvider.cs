@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 
 namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client.Domain.Connection
 {
-    public class ConnectionConfigProvider : MonoBehaviour, INetworkConnectionConfigProvider
+    public class ConnectionConfigProvider : MonoBehaviour, IConnectionConfigProvider
     {
         [SerializeField] ConnectionConfig _Config;
 

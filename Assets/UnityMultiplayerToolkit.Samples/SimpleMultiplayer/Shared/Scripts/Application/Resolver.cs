@@ -9,7 +9,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
         public void InitializeBeforeSceneLoad()
         {
 #if !UNITY_SERVER
-            INetworkConnectionConfigProvider configProvider = ApplicationInitializer.FindObjectOfInterface<INetworkConnectionConfigProvider>();
+            IConnectionConfigProvider configProvider = ApplicationInitializer.FindObjectOfInterface<IConnectionConfigProvider>();
 
             // Presenter
             var connectionPresenter = GameObject.FindObjectOfType<Client.ConnectionPresenter>();
