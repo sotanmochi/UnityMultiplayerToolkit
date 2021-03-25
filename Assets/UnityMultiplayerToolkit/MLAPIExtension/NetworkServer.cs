@@ -9,15 +9,14 @@ using MLAPI;
 using MLAPI.Transports;
 using MLAPI.Transports.Tasks;
 using MLAPI.Messaging;
-using MLAPI.Security;
 using MLAPI.Spawning;
 using MLAPI.Serialization.Pooled;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
-    [AddComponentMenu("MLAPI Extension/MLAPIServer")]
-    [RequireComponent(typeof(MLAPI.NetworkingManager))]
-    public class MLAPIServer : MonoBehaviour, INetworkingManagerExtension
+    [RequireComponent(typeof(NetworkManager))]
+    [AddComponentMenu("Unity Multiplayer Toolkit/MLAPI/NetworkServer")]
+    public class NetworkServer : MonoBehaviour, INetworkManager
     {
         [SerializeField] bool _AutoStart = true;
         [SerializeField] NetworkConfig _NetworkConfig;
@@ -28,8 +27,14 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         {
             get
             {
-                if (MLAPI.NetworkingManager.Singleton != null) return MLAPI.NetworkingManager.Singleton.IsServer;
-                else return false;
+                if (NetworkManager.Singleton != null)
+                {
+                    return NetworkManager.Singleton.IsServer;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -42,23 +47,25 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<ulong> OnClientDisconnectedAsObservable() => _OnClientDisconnectedSubject;
         private Subject<ulong> _OnClientDisconnectedSubject = new Subject<ulong>();
 
-        public IObservable<List<NetworkedObject>> OnSpawnedObjectsAsObservable() => _OnSpawnedObjectsSubject;
-        private Subject<List<NetworkedObject>> _OnSpawnedObjectsSubject = new Subject<List<NetworkedObject>>();
+        public IObservable<List<NetworkObject>> OnNetworkedObjectSpawnedAsObservable() => _OnNetworkObjectSpawnedSubject;
+        private Subject<List<NetworkObject>> _OnNetworkObjectSpawnedSubject = new Subject<List<NetworkObject>>();
 
-        public IObservable<List<ulong>> OnDestroyedObjectsAsObservable() => _OnDestroyedObjectsSubject;
-        private Subject<List<ulong>> _OnDestroyedObjectsSubject = new Subject<List<ulong>>();
+        public IObservable<List<ulong>> OnNetworkedObjectDestroyedAsObservable() => _OnNetworkedObjectDestroyedSubject;
+        private Subject<List<ulong>> _OnNetworkedObjectDestroyedSubject = new Subject<List<ulong>>();
 
-        private MLAPIConnectionConfig _ConnectionConfig;
+        public bool Initialized => _Initialized;
+        private bool _Initialized;
 
+        private ConnectionConfig _ConnectionConfig;
         private CompositeDisposable _CompositeDisposable;
 
-        private void Awake()
+        void Awake()
         {
             _CompositeDisposable = new CompositeDisposable();
             SubscribeSpawnedObjects();
         }
 
-        private async void Start()
+        async void Start()
         {
 #if UNITY_SERVER
             _AutoStart = true;
@@ -81,7 +88,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                     }
                 }
 
-                MLAPIConnectionConfig connectionConfig = MLAPIConnectionConfig.GetDefault();
+                ConnectionConfig connectionConfig = ConnectionConfig.GetDefault();
                 connectionConfig.Port = listeningPort;
                 connectionConfig.Key = roomKey;
 
@@ -93,13 +100,13 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             _CompositeDisposable.Dispose();
             StopServer();
         }
 
-        public async void ApplicationQuit(int timeSeconds = 60)
+        public async void ApplicationQuit(int timeSeconds = 30)
         {
             string message = "The connected server process is going down in " + timeSeconds + "seconds.";
 
@@ -110,9 +117,9 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             Application.Quit();
         }
 
-        public async UniTask<bool> StartServer(NetworkConfig networkConfig = null, MLAPIConnectionConfig connectionConfig = null)
+        public async UniTask<bool> StartServer(NetworkConfig networkConfig = null, ConnectionConfig connectionConfig = null)
         {
-            if (MLAPI.NetworkingManager.Singleton.IsServer)
+            if (MLAPI.NetworkManager.Singleton.IsServer)
             {
                 Debug.LogWarning("[MLAPI Extension] Cannot start server while an instance is already running.");
                 return false;
@@ -124,33 +131,36 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
             if (connectionConfig == null)
             {
-                connectionConfig = MLAPIConnectionConfig.GetDefault();
+                connectionConfig = ConnectionConfig.GetDefault();
             }
 
             _ConnectionConfig = connectionConfig;
 
             // Network config
-            MLAPI.NetworkingManager.Singleton.NetworkConfig.EnableSceneManagement = networkConfig.EnableSceneManagement;
-            MLAPI.NetworkingManager.Singleton.NetworkConfig.ConnectionApproval = networkConfig.ConnectionApproval;
-            MLAPI.NetworkingManager.Singleton.NetworkConfig.CreatePlayerPrefab = networkConfig.CreatePlayerPrefab;
-            MLAPI.NetworkingManager.Singleton.NetworkConfig.ForceSamePrefabs = networkConfig.ForceSamePrefabs;
-            MLAPI.NetworkingManager.Singleton.NetworkConfig.RecycleNetworkIds = networkConfig.RecycleNetworkIds;
+            NetworkManager.Singleton.NetworkConfig.EnableSceneManagement = networkConfig.EnableSceneManagement;
+            NetworkManager.Singleton.NetworkConfig.ConnectionApproval = networkConfig.ConnectionApproval;
+            NetworkManager.Singleton.NetworkConfig.CreatePlayerPrefab = networkConfig.CreatePlayerPrefab;
+            NetworkManager.Singleton.NetworkConfig.ForceSamePrefabs = networkConfig.ForceSamePrefabs;
+            NetworkManager.Singleton.NetworkConfig.RecycleNetworkIds = networkConfig.RecycleNetworkIds;
 
             // Transport
-            Transport transport = MLAPI.NetworkingManager.Singleton.NetworkConfig.NetworkTransport;
-            if (transport is MLAPI.Transports.UNET.UnetTransport unetTransport)
+            NetworkTransport transport = NetworkManager.Singleton.NetworkConfig.NetworkTransport;
+            if (transport is MLAPI.Transports.UNET.UNetTransport unetTransport)
             {
                 // unetTransport.ConnectAddress = connectionConfig.Address.Trim();
                 // unetTransport.ConnectPort = connectionConfig.Port;
                 unetTransport.ServerListenPort = connectionConfig.Port;
             }
-#if RUFFLES_TRANSPORT
-            else if (transport is RufflesTransport.RufflesTransport rufflesTransport)
+            else if (transport is MLAPI.Transports.Enet.EnetTransport enetTransport)
             {
-                // rufflesTransport.ConnectAddress = connectionConfig.Address.Trim();
-                rufflesTransport.Port = (ushort)connectionConfig.Port;
+                // enetTransport.Address = _ConnectionConfig.Address.Trim();
+                enetTransport.Port = (ushort)_ConnectionConfig.Port;
             }
-#endif
+            else if (transport is MLAPI.Transports.LiteNetLib.LiteNetLibTransport liteNetLibTransport)
+            {
+                // liteNetLibTransport.Address = _ConnectionConfig.Address.Trim();
+                liteNetLibTransport.Port = (ushort)_ConnectionConfig.Port;
+            }
             else
             {
                 Debug.LogError("[MLAPI Extension] Unknown transport.");
@@ -158,33 +168,33 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
 
             // Callbacks
-            MLAPI.NetworkingManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
-            MLAPI.NetworkingManager.Singleton.OnServerStarted += OnServerStarted;
-            MLAPI.NetworkingManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-            MLAPI.NetworkingManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+            NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
+            NetworkManager.Singleton.OnServerStarted += OnServerStarted;
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
 
             // Initialize transport
-            MLAPI.NetworkingManager.Singleton.NetworkConfig.NetworkTransport.Init();
+            NetworkManager.Singleton.NetworkConfig.NetworkTransport.Init();
 
             // Start server
-            SocketTasks tasks = MLAPI.NetworkingManager.Singleton.StartServer();
+            SocketTasks tasks = NetworkManager.Singleton.StartServer();
             await UniTask.WaitUntil(() => tasks.IsDone);
 
-            return MLAPI.NetworkingManager.Singleton.IsServer;
+            return NetworkManager.Singleton.IsServer;
         }
 
         public void StopServer()
         {
-            if (MLAPI.NetworkingManager.Singleton != null && MLAPI.NetworkingManager.Singleton.IsServer)
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
             {
-                MLAPI.NetworkingManager.Singleton.StopServer();
+                NetworkManager.Singleton.StopServer();
                 Debug.Log("[MLAPI Extension] MLAPI Server has stopped.");
 
                 // Remove callbacks
-                MLAPI.NetworkingManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
-                MLAPI.NetworkingManager.Singleton.OnServerStarted -= OnServerStarted;
-                MLAPI.NetworkingManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-                MLAPI.NetworkingManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+                NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
+                NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
+                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
             }
             else
             {
@@ -192,37 +202,37 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
         }
 
-        public void NotifyServerProcessDownToAllClients(string message, string channel = null, SecuritySendFlags security = SecuritySendFlags.None)
+        public void NotifyServerProcessDownToAllClients(string message, NetworkChannel channel = NetworkChannel.Internal)
         {
-            using (PooledBitStream outputStream = PooledBitStream.Get())
+            using (PooledNetworkBuffer outputStream = PooledNetworkBuffer.Get())
             {
-                using (PooledBitWriter writer = PooledBitWriter.Get(outputStream))
+                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(outputStream))
                 {
                     writer.WriteStringPacked(message);
                 }
 
-                List<ulong> clientIds = MLAPI.NetworkingManager.Singleton.ConnectedClientsList.Select(client => client.ClientId).ToList<ulong>();
-                CustomMessagingManager.SendNamedMessage("NotifyServerProcessDown", clientIds, outputStream, channel, security);
+                List<ulong> clientIds = MLAPI.NetworkManager.Singleton.ConnectedClientsList.Select(client => client.ClientId).ToList<ulong>();
+                CustomMessagingManager.SendNamedMessage("NotifyServerProcessDown", clientIds, outputStream, channel);
             }
         }
 
-        public void SendMessageToAllClients(string messageName, Stream dataStream, string channel = null, SecuritySendFlags security = SecuritySendFlags.None)
+        public void SendMessageToAllClients(string messageName, Stream dataStream, NetworkChannel channel = NetworkChannel.Internal)
         {
-            List<ulong> clientIds = MLAPI.NetworkingManager.Singleton.ConnectedClientsList.Select(client => client.ClientId).ToList<ulong>();
-            CustomMessagingManager.SendNamedMessage(messageName, clientIds, dataStream, channel, security);
+            List<ulong> clientIds = MLAPI.NetworkManager.Singleton.ConnectedClientsList.Select(client => client.ClientId).ToList<ulong>();
+            CustomMessagingManager.SendNamedMessage(messageName, clientIds, dataStream, channel);
         }
 
-        public void SendMessageToAllClientsExcept(string messageName, ulong clientIdToIgnore, Stream dataStream, string channel = null, SecuritySendFlags security = SecuritySendFlags.None)
+        public void SendMessageToAllClientsExcept(string messageName, ulong clientIdToIgnore, Stream dataStream, NetworkChannel channel = NetworkChannel.Internal)
         {
-            List<ulong> clientIds = MLAPI.NetworkingManager.Singleton.ConnectedClientsList
+            List<ulong> clientIds = MLAPI.NetworkManager.Singleton.ConnectedClientsList
                                     .Where(client => client.ClientId != clientIdToIgnore)
                                     .Select(client => client.ClientId).ToList<ulong>();
-            CustomMessagingManager.SendNamedMessage(messageName, clientIds, dataStream, channel, security);
+            CustomMessagingManager.SendNamedMessage(messageName, clientIds, dataStream, channel);
         }
 
 #region Callbacks
 
-        private void ApprovalCheck(byte[] connectionData, ulong clientId, MLAPI.NetworkingManager.ConnectionApprovedDelegate callback)
+        private void ApprovalCheck(byte[] connectionData, ulong clientId, NetworkManager.ConnectionApprovedDelegate callback)
         {
             string connectionKey = System.Text.Encoding.ASCII.GetString(connectionData);
             bool approved = connectionKey.Equals(_ConnectionConfig.Key);
@@ -256,20 +266,20 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         {
             var beforeKeys = new ulong[0];
 
-            SpawnManager.SpawnedObjects
+            NetworkSpawnManager.SpawnedObjects
             .ObserveEveryValueChanged(dict => dict.Count)
             .Skip(1)
             .Subscribe(count => 
             {
-                var spawnedObjKeys = SpawnManager.SpawnedObjects.Keys.Except(beforeKeys);
-                var destroyedObjKeys = beforeKeys.Except(SpawnManager.SpawnedObjects.Keys);
+                var spawnedObjKeys = NetworkSpawnManager.SpawnedObjects.Keys.Except(beforeKeys);
+                var destroyedObjKeys = beforeKeys.Except(NetworkSpawnManager.SpawnedObjects.Keys);
 
-                beforeKeys = SpawnManager.SpawnedObjects.Keys.ToArray();
+                beforeKeys = NetworkSpawnManager.SpawnedObjects.Keys.ToArray();
 
-                List<NetworkedObject> spawnedObjects = new List<NetworkedObject>();
+                List<NetworkObject> spawnedObjects = new List<NetworkObject>();
                 foreach(var key in spawnedObjKeys)
                 {
-                    if (SpawnManager.SpawnedObjects.TryGetValue(key, out NetworkedObject netObject))
+                    if (NetworkSpawnManager.SpawnedObjects.TryGetValue(key, out NetworkObject netObject))
                     {
                         spawnedObjects.Add(netObject);
                     }
@@ -279,15 +289,14 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
                 if (spawnedObjects.Count > 0)
                 {
-                    _OnSpawnedObjectsSubject.OnNext(spawnedObjects);
+                    _OnNetworkObjectSpawnedSubject.OnNext(spawnedObjects);
                 }
                 if (destroyedObjectIds.Count > 0)
                 {
-                    _OnDestroyedObjectsSubject.OnNext(destroyedObjectIds);
+                    _OnNetworkedObjectDestroyedSubject.OnNext(destroyedObjectIds);
                 }
             })
             .AddTo(_CompositeDisposable);
         }
-
     }
 }
