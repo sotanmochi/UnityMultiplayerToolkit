@@ -79,7 +79,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         private void MessageHandler_Server_SendServerProcessDownCommand(ulong senderClientId, Stream dataStream)
         {
-            using (PooledBitReader reader = PooledBitReader.Get(dataStream))
+            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
             {
                 int timeSeconds = reader.ReadInt32Packed();
                 _Server.ApplicationQuit(timeSeconds);
@@ -88,7 +88,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         private void MessageHandler_Server_SendTextMessageToServer(ulong senderClientId, Stream dataStream)
         {
-            using (PooledBitReader reader = PooledBitReader.Get(dataStream))
+            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
             {
                 string message = reader.ReadStringPacked().ToString();
                 _OnReceivedTextMessageSubject.OnNext((senderClientId, message));
@@ -97,15 +97,15 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         private void MessageHandler_Server_SendTextMessageToAllClients(ulong senderClientId, Stream dataStream)
         {
-            using (PooledBitReader reader = PooledBitReader.Get(dataStream))
+            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
             {
                 string message = reader.ReadStringPacked().ToString();
                 _OnReceivedTextMessageSubject.OnNext((senderClientId, message));
 
                 // Server to Client
-                using (PooledBitStream outputStream = PooledBitStream.Get())
+                using (PooledNetworkBuffer outputStream = PooledNetworkBuffer.Get())
                 {
-                    using (PooledBitWriter writer = PooledBitWriter.Get(outputStream))
+                    using (PooledNetworkWriter writer = PooledNetworkWriter.Get(outputStream))
                     {
                         writer.WriteUInt64Packed(senderClientId);
                         writer.WriteStringPacked(message);
@@ -117,15 +117,15 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         private void MessageHandler_Server_SendTextMessageExceptSelf(ulong senderClientId, Stream dataStream)
         {
-            using (PooledBitReader reader = PooledBitReader.Get(dataStream))
+            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
             {
                 string message = reader.ReadStringPacked().ToString();
                 _OnReceivedTextMessageSubject.OnNext((senderClientId, message));
 
                 // Server to Client
-                using (PooledBitStream outputStream = PooledBitStream.Get())
+                using (PooledNetworkBuffer outputStream = PooledNetworkBuffer.Get())
                 {
-                    using (PooledBitWriter writer = PooledBitWriter.Get(outputStream))
+                    using (PooledNetworkWriter writer = PooledNetworkWriter.Get(outputStream))
                     {
                         writer.WriteUInt64Packed(senderClientId);
                         writer.WriteStringPacked(message);
@@ -141,7 +141,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         private void MessageHandler_Client_SendTextMessageToAllClients(ulong sender, Stream dataStream)
         {
-            using (PooledBitReader reader = PooledBitReader.Get(dataStream))
+            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
             {
                 ulong senderClientId = reader.ReadUInt64Packed();
                 string message = reader.ReadStringPacked().ToString();
@@ -151,7 +151,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         private void MessageHandler_Client_SendTextMessageExceptSelf(ulong sender, Stream dataStream)
         {
-            using (PooledBitReader reader = PooledBitReader.Get(dataStream))
+            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
             {
                 ulong senderClientId = reader.ReadUInt64Packed();
                 string message = reader.ReadStringPacked().ToString();
@@ -165,9 +165,9 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         public void SendServerProcessDownCommand(int timeSeconds)
         {
-            using (PooledBitStream stream = PooledBitStream.Get())
+            using (PooledNetworkBuffer stream = PooledNetworkBuffer.Get())
             {
-                using (PooledBitWriter writer = PooledBitWriter.Get(stream))
+                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(stream))
                 {
                     writer.WriteInt32Packed(timeSeconds);
                     _Client.SendMessageToServer(MessagingHubConstants.SEND_SERVER_PROCESS_DOWN_COMMAND, stream);
@@ -177,9 +177,9 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         public void SendTextMessageToServer(string message)
         {
-            using (PooledBitStream stream = PooledBitStream.Get())
+            using (PooledNetworkBuffer stream = PooledNetworkBuffer.Get())
             {
-                using (PooledBitWriter writer = PooledBitWriter.Get(stream))
+                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(stream))
                 {
                     writer.WriteStringPacked(message);
                     _Client.SendMessageToServer(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_SERVER, stream);
@@ -189,9 +189,9 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         public void SendTextMessageToAllClients(string message)
         {
-            using (PooledBitStream stream = PooledBitStream.Get())
+            using (PooledNetworkBuffer stream = PooledNetworkBuffer.Get())
             {
-                using (PooledBitWriter writer = PooledBitWriter.Get(stream))
+                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(stream))
                 {
                     writer.WriteStringPacked(message);
                     _Client.SendMessageToServer(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_ALL_CLIENTS, stream);
@@ -201,9 +201,9 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         public void SendTextMessageToClientsExceptSelf(string message)
         {
-            using (PooledBitStream stream = PooledBitStream.Get())
+            using (PooledNetworkBuffer stream = PooledNetworkBuffer.Get())
             {
-                using (PooledBitWriter writer = PooledBitWriter.Get(stream))
+                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(stream))
                 {
                     writer.WriteStringPacked(message);
                     _Client.SendMessageToServer(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_CLIENTS_EXCEPT_SELF, stream);

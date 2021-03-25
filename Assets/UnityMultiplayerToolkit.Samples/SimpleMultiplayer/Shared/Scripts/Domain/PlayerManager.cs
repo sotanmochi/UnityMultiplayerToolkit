@@ -9,7 +9,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
     public class PlayerManager : NetworkedObjectManagerBase<Player>
     {
         [SerializeField] MonoBehaviour _NetworkManager;
-        [SerializeField] NetworkedObject _NetworkedPlayerPrefab;
+        [SerializeField] NetworkObject _NetworkPlayerPrefab;
 
         [SerializeField] private Dictionary<ulong, Player> _Players = new Dictionary<ulong, Player>();
 
@@ -33,7 +33,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
 
             if (networkManager != null)
             {
-                Initialize(networkManager, _NetworkedPlayerPrefab, this.transform);
+                Initialize(networkManager, _NetworkPlayerPrefab, this.transform);
 
                 networkManager.OnClientConnectedAsObservable()
                 .Where(_ => networkManager.IsServer)
