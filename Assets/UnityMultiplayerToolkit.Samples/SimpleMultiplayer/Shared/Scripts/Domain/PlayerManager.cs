@@ -8,8 +8,8 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
 {
     public class PlayerManager : NetworkedObjectManagerBase<Player>
     {
-        [SerializeField] MonoBehaviour _NetworkingManagerExtension;
-        [SerializeField] NetworkedObject _NetworkedPlayerPrefab;
+        [SerializeField] MonoBehaviour _NetworkManager;
+        [SerializeField] NetworkObject _NetworkPlayerPrefab;
 
         [SerializeField] private Dictionary<ulong, Player> _Players = new Dictionary<ulong, Player>();
 
@@ -29,14 +29,14 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
             })
             .AddTo(this);
 
-            INetworkingManagerExtension networkingManagerExtension = _NetworkingManagerExtension.GetComponent<INetworkingManagerExtension>();
+            INetworkManager networkManager = _NetworkManager.GetComponent<INetworkManager>();
 
-            if (networkingManagerExtension != null)
+            if (networkManager != null)
             {
-                Initialize(networkingManagerExtension, _NetworkedPlayerPrefab, this.transform);
+                Initialize(networkManager, _NetworkPlayerPrefab, this.transform);
 
-                networkingManagerExtension.OnClientConnectedAsObservable()
-                .Where(_ => networkingManagerExtension.IsServer)
+                networkManager.OnClientConnectedAsObservable()
+                .Where(_ => networkManager.IsServer)
                 .Subscribe(clientId => 
                 {
                     SpawnWithClientOwnership(clientId);

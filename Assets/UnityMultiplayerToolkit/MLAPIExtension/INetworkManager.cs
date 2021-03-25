@@ -4,14 +4,14 @@ using MLAPI;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
-    public interface INetworkingManagerExtension
+    public interface INetworkManager
     {
         bool IsServer { get; }
         bool IsClient { get; }
         bool IsRunning { get; }
         IObservable<ulong> OnClientConnectedAsObservable();
         IObservable<ulong> OnClientDisconnectedAsObservable();
-        IObservable<List<NetworkedObject>> OnSpawnedObjectsAsObservable();
-        IObservable<List<ulong>> OnDestroyedObjectsAsObservable();
+        IObservable<List<NetworkObject>> OnNetworkedObjectSpawnedAsObservable();
+        IObservable<List<ulong>> OnNetworkedObjectDestroyedAsObservable();
     }
 }

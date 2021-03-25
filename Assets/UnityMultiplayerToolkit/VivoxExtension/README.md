@@ -1,7 +1,7 @@
-# Unity Multiplayer Toolkit
+# Vivox Extension
 
 ## Dependencies
-- [MLAPI 0.1.0](https://github.com/Unity-Technologies/com.unity.multiplayer.mlapi/releases/tag/0.1.0)
+- [Vivox SDK 5.14.0](https://developer.vivox.com/)
 
 - [UniRx 7.1.0](https://github.com/neuecc/UniRx/releases/tag/7.1.0)
 

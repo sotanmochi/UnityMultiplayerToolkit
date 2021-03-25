@@ -27,7 +27,7 @@ namespace UnityMultiplayerToolkit.Infra.AWS.Lambda
         public string RoomName;
     }
 
-    public class LambdaClient : MonoBehaviour, INetworkConnectionConfigProvider
+    public class LambdaClient : MonoBehaviour, IConnectionConfigProvider
     {
         [SerializeField] string _LambdaFunctionName = "ClientServiceLambda";
         [SerializeField] AWSConfig _Config;
