@@ -151,16 +151,21 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 // unetTransport.ConnectPort = connectionConfig.Port;
                 unetTransport.ServerListenPort = connectionConfig.Port;
             }
-            else if (transport is MLAPI.Transports.Enet.EnetTransport enetTransport)
+            else if (transport is MLAPI.Transports.Ruffles.RufflesTransport rufflesTransport)
             {
-                // enetTransport.Address = _ConnectionConfig.Address.Trim();
-                enetTransport.Port = (ushort)_ConnectionConfig.Port;
+                // rufflesTransport.ConnectAddress = _ConnectionConfig.Address.Trim();
+                rufflesTransport.Port = (ushort)_ConnectionConfig.Port;
             }
             else if (transport is MLAPI.Transports.LiteNetLib.LiteNetLibTransport liteNetLibTransport)
             {
                 // liteNetLibTransport.Address = _ConnectionConfig.Address.Trim();
                 liteNetLibTransport.Port = (ushort)_ConnectionConfig.Port;
             }
+            // else if (transport is MLAPI.Transports.Enet.EnetTransport enetTransport)
+            // {
+            //     // enetTransport.Address = _ConnectionConfig.Address.Trim();
+            //     enetTransport.Port = (ushort)_ConnectionConfig.Port;
+            // }
             else
             {
                 Debug.LogError("[MLAPI Extension] Unknown transport.");
@@ -180,7 +185,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             SocketTasks tasks = NetworkManager.Singleton.StartServer();
             await UniTask.WaitUntil(() => tasks.IsDone);
 
-            return NetworkManager.Singleton.IsServer;
+            return tasks.Success;
         }
 
         public void StopServer()

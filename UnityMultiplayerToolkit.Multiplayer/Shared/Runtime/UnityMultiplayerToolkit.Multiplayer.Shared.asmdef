@@ -1,9 +1,7 @@
 {
-    "name": "UnityMultiplayerToolkit.Infra",
+    "name": "UnityMultiplayerToolkit.Multiplayer.Shared",
     "references": [
-        "UniRx",
-        "UniTask",
-        "UnityMultiplayerToolkit"
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,9 +1,9 @@
 {
     "dependencies": {},
     "description": "Infrastructure for Unity Multiplayer Toolkit",
-    "displayName": "UnityMultiplayerToolkit.Infra",
+    "displayName": "MultiplayerToolkit.Infra.AWS",
     "license": "MIT",
-    "name": "com.sotanmochi.unity-multiplayer-toolkit.infra",
+    "name": "jp.sotanmochi.unity-multiplayer-toolkit.infra.aws",
     "unity": "2019.4",
     "version": "0.1.0"
 }
