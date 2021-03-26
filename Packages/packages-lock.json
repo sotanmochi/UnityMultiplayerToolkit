@@ -1,14 +1,5 @@
 {
   "dependencies": {
-    "com.mlapi.contrib.transport.enet": {
-      "version": "https://github.com/Unity-Technologies/mlapi-community-contributions.git?path=/Transports/com.mlapi.contrib.transport.enet",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.multiplayer.mlapi": "0.0.1-preview.1"
-      },
-      "hash": "e5a2ce50ccdb9a90fc13d7a375836ba52a29e3b2"
-    },
     "com.mlapi.contrib.transport.litenetlib": {
       "version": "https://github.com/Unity-Technologies/mlapi-community-contributions.git?path=/Transports/com.mlapi.contrib.transport.litenetlib",
       "depth": 0,
