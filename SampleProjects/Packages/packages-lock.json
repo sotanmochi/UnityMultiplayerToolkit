@@ -93,14 +93,20 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
-    "jp.sotanmochi.unity-multiplayer-toolkit": {
-      "version": "file:../../UnityMultiplayerToolkit",
+    "jp.sotanmochi.unity-multiplayer-toolkit.infra.aws": {
+      "version": "file:../../UnityMultiplayerToolkit.Infra/AWS",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
-    "jp.sotanmochi.unity-multiplayer-toolkit.infra": {
-      "version": "file:../../UnityMultiplayerToolkit.Infra",
+    "jp.sotanmochi.unity-multiplayer-toolkit.mlapi": {
+      "version": "file:../../UnityMultiplayerToolkit.Multiplayer/MLAPIExtension",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "jp.sotanmochi.unity-multiplayer-toolkit.multiplayer.shared": {
+      "version": "file:../../UnityMultiplayerToolkit.Multiplayer/Shared",
       "depth": 0,
       "source": "local",
       "dependencies": {}

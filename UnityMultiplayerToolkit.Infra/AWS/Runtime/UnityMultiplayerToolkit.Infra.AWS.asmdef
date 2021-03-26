@@ -1,12 +1,8 @@
 {
-    "name": "UnityMultiplayerToolkit.Samples.SimpleMultiplayer",
+    "name": "UnityMultiplayerToolkit.Infra.AWS",
     "references": [
-        "UniRx",
         "UniTask",
-        "UnityMultiplayerToolkit.Multiplayer.Shared",
-        "UnityMultiplayerToolkit.MLAPIExtension",
-        "Unity.Multiplayer.MLAPI.Runtime",
-        "UnityMultiplayerToolkit.Infra.AWS"
+        "UnityMultiplayerToolkit.Multiplayer.Shared"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

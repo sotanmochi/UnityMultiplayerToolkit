@@ -1,8 +1,9 @@
 {
-    "name": "UnityMultiplayerToolkit",
+    "name": "UnityMultiplayerToolkit.MLAPIExtension",
     "references": [
         "UniRx",
         "UniTask",
+        "UnityMultiplayerToolkit.Multiplayer.Shared",
         "Unity.Multiplayer.MLAPI.Runtime",
         "Ruffles MLAPI Transport",
         "LiteNetLib MLAPI Transport"

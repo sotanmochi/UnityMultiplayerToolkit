@@ -1,9 +1,9 @@
 {
     "dependencies": {},
     "description": "Multiplayer Toolkit for Unity",
-    "displayName": "UnityMultiplayerToolkit",
+    "displayName": "MultiplayerToolkit.Multiplayer.MLAPIExtension",
     "license": "MIT",
-    "name": "jp.sotanmochi.unity-multiplayer-toolkit",
+    "name": "jp.sotanmochi.unity-multiplayer-toolkit.mlapi",
     "unity": "2019.4",
     "version": "0.1.0"
 }
