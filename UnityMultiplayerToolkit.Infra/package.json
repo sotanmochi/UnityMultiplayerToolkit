@@ -3,7 +3,7 @@
     "description": "Infrastructure for Unity Multiplayer Toolkit",
     "displayName": "UnityMultiplayerToolkit.Infra",
     "license": "MIT",
-    "name": "com.sotanmochi.unity-multiplayer-toolkit.infra",
+    "name": "jp.sotanmochi.unity-multiplayer-toolkit.infra",
     "unity": "2019.4",
     "version": "0.1.0"
 }
