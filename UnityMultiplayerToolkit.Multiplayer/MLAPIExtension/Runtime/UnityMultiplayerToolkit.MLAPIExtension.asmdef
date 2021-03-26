@@ -1,10 +1,12 @@
 {
-    "name": "UnityMultiplayerToolkit.Samples.SimpleMultiplayer",
+    "name": "UnityMultiplayerToolkit.MLAPIExtension",
     "references": [
-        "UnityMultiplayerToolkit",
         "UniRx",
         "UniTask",
-        "Unity.Multiplayer.MLAPI.Runtime"
+        "UnityMultiplayerToolkit.Multiplayer.Shared",
+        "Unity.Multiplayer.MLAPI.Runtime",
+        "Ruffles MLAPI Transport",
+        "LiteNetLib MLAPI Transport"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

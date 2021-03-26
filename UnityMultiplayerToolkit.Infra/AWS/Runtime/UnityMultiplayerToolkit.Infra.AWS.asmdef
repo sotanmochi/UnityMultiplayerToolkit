@@ -1,0 +1,16 @@
+{
+    "name": "UnityMultiplayerToolkit.Infra.AWS",
+    "references": [
+        "UniTask",
+        "UnityMultiplayerToolkit.Multiplayer.Shared"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
