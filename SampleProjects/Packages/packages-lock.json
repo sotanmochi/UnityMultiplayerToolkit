@@ -106,7 +106,7 @@
       "dependencies": {}
     },
     "jp.sotanmochi.unity-multiplayer-toolkit.multiplayer.shared": {
-      "version": "file:../../UnityMultiplayerToolkit.Multiplayer/Shared",
+      "version": "file:../../UnityMultiplayerToolkit.Shared",
       "depth": 0,
       "source": "local",
       "dependencies": {}
