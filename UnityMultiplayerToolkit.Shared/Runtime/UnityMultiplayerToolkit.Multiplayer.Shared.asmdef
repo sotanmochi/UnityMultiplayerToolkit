@@ -1,7 +1,8 @@
 {
     "name": "UnityMultiplayerToolkit.Multiplayer.Shared",
     "references": [
-        "UniTask"
+        "UniTask",
+        "UniRx"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

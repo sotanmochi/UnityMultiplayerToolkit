@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client.Domain.Connection
+namespace UnityMultiplayerToolkit.Shared
 {
     public class ConnectionConfigProvider : MonoBehaviour, IConnectionConfigProvider
     {
@@ -12,7 +12,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client.Domain.Connec
             return true;
         }
         
-        public async UniTask<ConnectionConfig> GetConnectionConfig(string roomName)
+        public async UniTask<ConnectionConfig> GetConnectionConfig(string roomName, string playerId = null)
         {
             return _Config;
         }
