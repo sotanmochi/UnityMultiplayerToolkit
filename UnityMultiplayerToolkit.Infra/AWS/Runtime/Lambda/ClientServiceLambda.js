@@ -21,6 +21,7 @@ exports.handler = async (event) => {
     let playerSessionMaxCount = process.env['MaximumPlayerSessionCount'];
 
     let requestedGameSessionName = event.RoomName;
+    let requestedPlayerSessionId = event.PlayerId;
 
     // find any sessions that have available players
     let gameSessions;
@@ -51,13 +52,34 @@ exports.handler = async (event) => {
 
     if (selectedGameSession == null)
     {
-        console.log("No game session detected, creating a new one");
         await GameLift.createGameSession({
             MaximumPlayerSessionCount: playerSessionMaxCount,
             Name: requestedGameSessionName,
             FleetId: fleetId
         }).promise().then(data => {
+            console.log("Created game session: ", data.GameSession.Name);
             selectedGameSession = data.GameSession;
+        }).catch(err => {
+           response = err; 
+        });
+    }
+
+    // if the response object has any value at any point before the end of
+    // the function that indicates a failure condition so return the response
+    if (response != null) 
+    {
+        return response;
+    }
+
+    let playerSession;
+    if (selectedGameSession != null) 
+    {
+        await GameLift.createPlayerSession({
+            GameSessionId : selectedGameSession.GameSessionId,
+            PlayerId: requestedPlayerSessionId
+        }).promise().then(data => {
+            console.log("Created player session ID: ", data.PlayerSession.PlayerSessionId);
+            playerSession = data.PlayerSession;
         }).catch(err => {
            response = err; 
         });

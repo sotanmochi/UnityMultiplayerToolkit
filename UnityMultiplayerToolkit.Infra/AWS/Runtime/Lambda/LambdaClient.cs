@@ -1,6 +1,7 @@
 using System.Text;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using UnityMultiplayerToolkit.Shared;
 using Amazon;
 using Amazon.Lambda;
 using Amazon.Lambda.Model;
@@ -12,10 +13,12 @@ namespace UnityMultiplayerToolkit.Infra.AWS.Lambda
     public class ConnectionConfigRequest
     {
         public string RoomName;
+        public string PlayerId;
 
-        public ConnectionConfigRequest(string roomName)
+        public ConnectionConfigRequest(string roomName, string playerId)
         {
             RoomName = roomName;
+            PlayerId = playerId;
         }
     }
 
@@ -37,13 +40,18 @@ namespace UnityMultiplayerToolkit.Infra.AWS.Lambda
             return true;
         }
 
-        public async UniTask<ConnectionConfig> GetConnectionConfig(string roomName)
+        public async UniTask<ConnectionConfig> GetConnectionConfig(string roomName, string playerId = null)
         {
+            if (string.IsNullOrEmpty(playerId))
+            {
+                playerId = System.Guid.NewGuid().ToString();
+            }
+
             RegionEndpoint regionEndpoint = RegionEndpoint.GetBySystemName(_Config.Region);
             CognitoAWSCredentials credentials = new CognitoAWSCredentials(_Config.IdentityPoolId, regionEndpoint);
 
             AmazonLambdaClient lambdaClient = new AmazonLambdaClient(credentials, regionEndpoint);
-            string jsonStr = JsonUtility.ToJson(new ConnectionConfigRequest(roomName));
+            string jsonStr = JsonUtility.ToJson(new ConnectionConfigRequest(roomName, playerId));
 
             var response = await InvokeLambdaFunctionAsync(lambdaClient, _LambdaFunctionName, InvocationType.RequestResponse, jsonStr);
             if (response.FunctionError == null)
@@ -55,7 +63,7 @@ namespace UnityMultiplayerToolkit.Infra.AWS.Lambda
 
                     if (session == null)
                     {
-                        Debug.Log($"Error in Lambda: {payload}");
+                        Debug.LogError($"[LambdaClient] Error in Lambda: {payload}");
                     }
                     else
                     {

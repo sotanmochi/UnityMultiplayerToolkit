@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnityMultiplayerToolkit
+namespace UnityMultiplayerToolkit.Shared
 {
     [System.Serializable]
     [CreateAssetMenu(menuName = "Unity Multiplayer Toolkit/Create Connection Config", fileName = "ConnectionConfig")]
