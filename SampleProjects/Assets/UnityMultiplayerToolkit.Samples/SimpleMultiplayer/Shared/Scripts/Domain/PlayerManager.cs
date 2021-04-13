@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UniRx;
 using MLAPI;
 using UnityMultiplayerToolkit.MLAPIExtension;
@@ -8,32 +7,34 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
 {
     public class PlayerManager : NetworkedObjectManagerBase<Player>
     {
-        [SerializeField] MonoBehaviour _NetworkManager;
+        [SerializeField] MonoBehaviour _NetworkManagerObject;
         [SerializeField] NetworkObject _NetworkPlayerPrefab;
-
-        [SerializeField] private Dictionary<ulong, Player> _Players = new Dictionary<ulong, Player>();
 
         void Awake()
         {
-            NetworkedObjects.ObserveAdd().Subscribe(kv => 
+            Initialize(_NetworkPlayerPrefab, this.transform);
+
+            NetworkObjects.ObserveAdd().Subscribe(addEvent => 
             {
-                _Players.Add(kv.Key, kv.Value);
-                Debug.Log("Added ObjectID: " + kv.Key + ", Players.Count: " + _Players.Count);
+                ulong objectId = addEvent.Key;
+                Debug.Log("Added ObjectID: " + objectId + ", Players.Count: " + NetworkObjects.Count);
+
+                Player player = addEvent.Value;
+                player.transform.SetParent(this.transform);
             })
             .AddTo(this);
 
-            NetworkedObjects.ObserveRemove().Subscribe(kv => 
+            NetworkObjects.ObserveRemove().Subscribe(removeEvent => 
             {
-                _Players.Remove(kv.Key);
-                Debug.Log("Removed ObjectID: " + kv.Key + ", Players.Count: " + _Players.Count);
+                ulong objectId = removeEvent.Key;
+                Debug.Log("Removed ObjectID: " + objectId + ", Players.Count: " + NetworkObjects.Count);
             })
             .AddTo(this);
 
-            INetworkManager networkManager = _NetworkManager.GetComponent<INetworkManager>();
+            INetworkManager networkManager = _NetworkManagerObject.GetComponent<INetworkManager>();
 
             if (networkManager != null)
             {
-                Initialize(networkManager, _NetworkPlayerPrefab, this.transform);
 
                 networkManager.OnClientConnectedAsObservable()
                 .Where(_ => networkManager.IsServer)
@@ -45,7 +46,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
             }
             else
             {
-                Debug.LogError("NetworkingManagerExtension is null.");
+                Debug.LogError("[SimpleMultiplayer] NetworkManager is null.");
             }
         }
     }
