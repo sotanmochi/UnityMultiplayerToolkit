@@ -7,7 +7,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
     public class ConnectionPresenter : MonoBehaviour
     {
         [SerializeField] ConnectionView _ConnectionView;
-        [SerializeField] IMultiplayerContext _MultiplayerContext;
+        [SerializeField] MultiplayerContext _MultiplayerContext;
 
         void Awake()
         {
