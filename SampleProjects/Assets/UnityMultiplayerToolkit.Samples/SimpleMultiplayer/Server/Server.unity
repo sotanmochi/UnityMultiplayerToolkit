@@ -519,7 +519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 512bdc6bfebefa742bbde59fca64fc3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _NetworkManager: {fileID: 738938337}
+  _NetworkManagerObject: {fileID: 738938337}
   _NetworkPlayerPrefab: {fileID: 2592869452330843822, guid: 505b75ccc2d35e841a2bb93a0d1251ce,
     type: 3}
 --- !u!1 &1019059074
