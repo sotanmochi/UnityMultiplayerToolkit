@@ -8,7 +8,7 @@ using UnityMultiplayerToolkit.Infra.AWS.GameLift;
 
 namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
 {
-    public class RoomContext : UnityEngine.MonoBehaviour
+    public class GameRoomContext : UnityEngine.MonoBehaviour
     {
         [UnityEngine.SerializeField] bool _AutoInitializeOnAwake;
         [UnityEngine.SerializeField] MessagingHub _MessagingHub;
@@ -29,7 +29,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
         {
             if (messagingHub == null || networkServer == null || gameLiftServer == null)
             {
-                UnityEngine.Debug.LogError("RoomManager can not be initialized.");
+                UnityEngine.Debug.LogError("GameRoomContext can not be initialized.");
                 return;
             }
 
