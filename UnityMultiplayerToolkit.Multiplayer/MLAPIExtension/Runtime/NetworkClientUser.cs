@@ -3,9 +3,9 @@ using UnityMultiplayerToolkit.Shared;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
-    public class NetworkPlayer : IPlayer
+    public class NetworkClientUser
     {
-        public NetworkPlayer(){}
+        public NetworkClientUser(){}
         public string UserId { get; set; }
         public ulong ClientId { get; set; }
     }
