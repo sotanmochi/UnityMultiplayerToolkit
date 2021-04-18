@@ -35,12 +35,19 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
 
             if (networkManager != null)
             {
-
                 networkManager.OnClientConnectedAsObservable()
                 .Where(_ => networkManager.IsServer)
                 .Subscribe(clientId => 
                 {
                     SpawnWithClientOwnership(clientId);
+                })
+                .AddTo(this);
+
+                networkManager.OnClientDisconnectedAsObservable()
+                .Where(_ => networkManager.IsServer)
+                .Subscribe(clientId => 
+                {
+                    DespawnObjects(clientId);
                 })
                 .AddTo(this);
             }
