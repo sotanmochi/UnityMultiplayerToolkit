@@ -21,13 +21,6 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
             Disconnect();
         }
 
-        // [Inject]
-        // Called from IInitializableBeforeSceneLoad.InitializeBeforeSceneLoad()
-        public void Construct(IConnectionConfigProvider connectionConfigProvider)
-        {
-            _ConnectionConfigProvider = connectionConfigProvider;
-        }
-
         public async UniTask<bool> Initialize()
         {
             _ConnectionConfigProvider = _ConnectionConfigProviderObject.GetComponent<IConnectionConfigProvider>();
