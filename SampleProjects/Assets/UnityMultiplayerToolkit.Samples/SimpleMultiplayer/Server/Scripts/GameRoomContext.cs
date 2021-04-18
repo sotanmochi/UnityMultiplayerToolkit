@@ -16,7 +16,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
         [UnityEngine.SerializeField] NetworkServer _NetworkServer;
         [UnityEngine.SerializeField] GameLiftServer _GameLiftServer;
 
-        private Dictionary<string, NetworkPlayer> _NetworkPlayers = new Dictionary<string, NetworkPlayer>();
+        private Dictionary<string, NetworkClientUser> _NetworkClientUsers = new Dictionary<string, NetworkClientUser>();
 
         void Awake()
         {
@@ -39,23 +39,23 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
             _GameLiftServer = gameLiftServer;
 
             _MessagingHub.OnReceivedSystemUserIdAsObservable()
-            .Subscribe(networkPlayer => 
+            .Subscribe(networkClientUser => 
             {
-                bool contained = _NetworkPlayers.ContainsKey(networkPlayer.UserId);
+                bool contained = _NetworkClientUsers.ContainsKey(networkClientUser.UserId);
 
                 bool accepted = true;
                 if (!_IsLocalServer)
                 {
-                    accepted = _GameLiftServer.AcceptPlayerSession(networkPlayer.UserId);
+                    accepted = _GameLiftServer.AcceptPlayerSession(networkClientUser.UserId);
                 }
 
                 if (!contained && accepted)
                 {
-                    _NetworkPlayers.Add(networkPlayer.UserId, networkPlayer);
+                    _NetworkClientUsers.Add(networkClientUser.UserId, networkClientUser);
                 }
                 else
                 {
-                    _NetworkServer.DisconnectClient(networkPlayer.ClientId, "Cannot accept system user id");
+                    _NetworkServer.DisconnectClient(networkClientUser.ClientId, "Cannot accept system user id");
                 }
             })
             .AddTo(this);
@@ -64,11 +64,11 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
             .Subscribe(player =>
             {
                 string userId = player.UserId;
-                if (_NetworkPlayers.TryGetValue(userId, out NetworkPlayer networkPlayer))
+                if (_NetworkClientUsers.TryGetValue(userId, out NetworkClientUser networkClientUser))
                 {
-                    _NetworkPlayers.Remove(userId);
-                    _GameLiftServer.RemovePlayerSession(networkPlayer.UserId);
-                    _NetworkServer.DisconnectClient(networkPlayer.ClientId, "PlayerEjection");
+                    _NetworkClientUsers.Remove(userId);
+                    _GameLiftServer.RemovePlayerSession(networkClientUser.UserId);
+                    _NetworkServer.DisconnectClient(networkClientUser.ClientId, "PlayerEjection");
                 }
             })
             .AddTo(this);
@@ -76,11 +76,11 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
             _NetworkServer.OnClientDisconnectedAsObservable()
             .Subscribe(clientId => 
             {
-                var networkPlayer = _NetworkPlayers.Select(kv => kv.Value).FirstOrDefault(v => v.ClientId == clientId);
-                if (networkPlayer != null)
+                var networkClientUser = _NetworkClientUsers.Select(kv => kv.Value).FirstOrDefault(v => v.ClientId == clientId);
+                if (networkClientUser != null)
                 {
-                    _NetworkPlayers.Remove(networkPlayer.UserId);
-                    _GameLiftServer.RemovePlayerSession(networkPlayer.UserId);
+                    _NetworkClientUsers.Remove(networkClientUser.UserId);
+                    _GameLiftServer.RemovePlayerSession(networkClientUser.UserId);
                 }
             })
             .AddTo(this);

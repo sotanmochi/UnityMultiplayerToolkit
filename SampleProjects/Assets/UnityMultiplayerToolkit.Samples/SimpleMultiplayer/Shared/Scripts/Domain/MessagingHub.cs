@@ -16,11 +16,11 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
         public IObservable<(ulong senderId, string message)> OnReceivedTextMessageAsObservable() => _OnReceivedTextMessageSubject;
         private Subject<(ulong senderId, string message)> _OnReceivedTextMessageSubject = new Subject<(ulong senderId, string message)>();
 
-        public IObservable<MLAPIExtension.NetworkPlayer> OnReceivedPlayerEjectionAsObservable() => _OnReceivedPlayerEjectionSubject;
-        private Subject<MLAPIExtension.NetworkPlayer> _OnReceivedPlayerEjectionSubject = new Subject<MLAPIExtension.NetworkPlayer>();
+        public IObservable<MLAPIExtension.NetworkClientUser> OnReceivedPlayerEjectionAsObservable() => _OnReceivedPlayerEjectionSubject;
+        private Subject<MLAPIExtension.NetworkClientUser> _OnReceivedPlayerEjectionSubject = new Subject<MLAPIExtension.NetworkClientUser>();
 
-        public IObservable<MLAPIExtension.NetworkPlayer> OnReceivedSystemUserIdAsObservable() => _OnReceivedSystemUserIdSubject;
-        private Subject<MLAPIExtension.NetworkPlayer> _OnReceivedSystemUserIdSubject = new Subject<MLAPIExtension.NetworkPlayer>();
+        public IObservable<MLAPIExtension.NetworkClientUser> OnReceivedSystemUserIdAsObservable() => _OnReceivedSystemUserIdSubject;
+        private Subject<MLAPIExtension.NetworkClientUser> _OnReceivedSystemUserIdSubject = new Subject<MLAPIExtension.NetworkClientUser>();
 
         public IObservable<string> OnReceivedDisconnectMessageAsObservable() => _OnReceivedDisconnectMessageSubject;
         private Subject<string> _OnReceivedDisconnectMessageSubject = new Subject<string>();
@@ -113,11 +113,11 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
             {
                string userId = reader.ReadStringPacked().ToString();
 
-                MLAPIExtension.NetworkPlayer networkPlayer = new MLAPIExtension.NetworkPlayer();
-                networkPlayer.ClientId = 0;
-                networkPlayer.UserId = userId;
+                MLAPIExtension.NetworkClientUser networkClientUser = new MLAPIExtension.NetworkClientUser();
+                networkClientUser.ClientId = 0;
+                networkClientUser.UserId = userId;
 
-                _OnReceivedSystemUserIdSubject.OnNext(networkPlayer);
+                _OnReceivedSystemUserIdSubject.OnNext(networkClientUser);
             }
         }
 
@@ -127,11 +127,11 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
             {
                string userId = reader.ReadStringPacked().ToString();
 
-                MLAPIExtension.NetworkPlayer networkPlayer = new MLAPIExtension.NetworkPlayer();
-                networkPlayer.ClientId = senderClientId;
-                networkPlayer.UserId = userId;
+                MLAPIExtension.NetworkClientUser networkClientUser = new MLAPIExtension.NetworkClientUser();
+                networkClientUser.ClientId = senderClientId;
+                networkClientUser.UserId = userId;
 
-                _OnReceivedSystemUserIdSubject.OnNext(networkPlayer);
+                _OnReceivedSystemUserIdSubject.OnNext(networkClientUser);
             }
         }
 
