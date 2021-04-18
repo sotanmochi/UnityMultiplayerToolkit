@@ -90,6 +90,19 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             networkedObject.Spawn();
         }
 
+        public void DespawnObjects(ulong ownerClientId, bool destroy = true)
+        {
+            List<NetworkObject> spawnedObjects = NetworkSpawnManager.SpawnedObjectsList.Where(netObj => netObj.OwnerClientId == ownerClientId).ToList();
+            foreach(var networkObject in spawnedObjects)
+            {
+                T component = networkObject.GetComponent<T>();
+                if (component != null)
+                {
+                    networkObject.Despawn(destroy);
+                }
+            }
+        }
+
 #endregion
 
         private void ObserveNetworkSpawnedObjects()
