@@ -10,6 +10,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
 {
     public class GameRoomContext : UnityEngine.MonoBehaviour
     {
+        [UnityEngine.SerializeField] bool _IsLocalServer;
         [UnityEngine.SerializeField] bool _AutoInitializeOnAwake;
         [UnityEngine.SerializeField] MessagingHub _MessagingHub;
         [UnityEngine.SerializeField] NetworkServer _NetworkServer;
@@ -41,14 +42,20 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
             .Subscribe(networkPlayer => 
             {
                 bool contained = _NetworkPlayers.ContainsKey(networkPlayer.UserId);
-                bool accepted = _GameLiftServer.AcceptPlayerSession(networkPlayer.UserId);
+
+                bool accepted = true;
+                if (!_IsLocalServer)
+                {
+                    accepted = _GameLiftServer.AcceptPlayerSession(networkPlayer.UserId);
+                }
+
                 if (!contained && accepted)
                 {
                     _NetworkPlayers.Add(networkPlayer.UserId, networkPlayer);
                 }
                 else
                 {
-                    _NetworkServer.DisconnectClient(networkPlayer.ClientId);
+                    _NetworkServer.DisconnectClient(networkPlayer.ClientId, "Cannot accept system user id");
                 }
             })
             .AddTo(this);
@@ -61,7 +68,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
                 {
                     _NetworkPlayers.Remove(userId);
                     _GameLiftServer.RemovePlayerSession(networkPlayer.UserId);
-                    _NetworkServer.DisconnectClient(networkPlayer.ClientId);
+                    _NetworkServer.DisconnectClient(networkPlayer.ClientId, "PlayerEjection");
                 }
             })
             .AddTo(this);

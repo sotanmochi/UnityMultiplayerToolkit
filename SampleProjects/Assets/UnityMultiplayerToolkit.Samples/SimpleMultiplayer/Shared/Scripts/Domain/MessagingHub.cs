@@ -22,6 +22,9 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
         public IObservable<MLAPIExtension.NetworkPlayer> OnReceivedSystemUserIdAsObservable() => _OnReceivedSystemUserIdSubject;
         private Subject<MLAPIExtension.NetworkPlayer> _OnReceivedSystemUserIdSubject = new Subject<MLAPIExtension.NetworkPlayer>();
 
+        public IObservable<string> OnReceivedDisconnectMessageAsObservable() => _OnReceivedDisconnectMessageSubject;
+        private Subject<string> _OnReceivedDisconnectMessageSubject = new Subject<string>();
+
         private NetworkServer _Server;
         private NetworkClient _Client;
 
@@ -39,6 +42,14 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
                 {
                     _Client = _NetworkManager.GetComponent<NetworkClient>();
                     RegisterNamedMessageHandlers();
+
+                    _Client.OnReceivedDisconnectMessageAsObservable()
+                    .Subscribe(message => 
+                    {
+                        Debug.Log("<color=red> ClientDisconnected: " + message + "</color>");
+                        _OnReceivedDisconnectMessageSubject.OnNext(message);
+                    })
+                    .AddTo(this);
                 }
                 else
                 {

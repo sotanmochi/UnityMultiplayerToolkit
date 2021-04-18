@@ -1093,7 +1093,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ba6d5f55906de4692ad870adb27374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _LambdaFunctionName: ClientServiceLambda
   _Config: {fileID: 11400000, guid: 19a45742290d44246aa6fbaf51dc31f3, type: 2}
 --- !u!1 &828137449
 GameObject:
@@ -1584,50 +1583,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1065382599}
   m_CullTransparentMesh: 0
---- !u!1 &1104117854
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1104117855}
-  - component: {fileID: 1104117856}
-  m_Layer: 0
-  m_Name: Resolver
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1104117855
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1104117854}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1595087571}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1104117856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1104117854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 261eaa01f999aa34891cedfc92619e3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _ConnectionConfigProviderObject: {fileID: 391807248}
 --- !u!1001 &1131190433
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2909,7 +2864,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1412677194
 GameObject:
@@ -3436,37 +3391,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1594496572}
   m_CullTransparentMesh: 0
---- !u!1 &1595087569
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1595087571}
-  m_Layer: 0
-  m_Name: InitializableBeforeSceneLoad
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1595087571
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1595087569}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1104117855}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1674334210
 GameObject:
   m_ObjectHideFlags: 0
@@ -4152,6 +4076,36 @@ MonoBehaviour:
   _Toggle_IsHost: {fileID: 1846659089}
   _Button_StartClient: {fileID: 1169155494}
   _Button_StopClient: {fileID: 218920160}
+--- !u!1 &2018060902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 1131190433}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2018060903}
+  m_Layer: 0
+  m_Name: IngameDebugConsole (Missing Prefab)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2018060903
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 1131190433}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018060902}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2032556327
 GameObject:
   m_ObjectHideFlags: 0
@@ -4259,9 +4213,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d3bcd76eb9c7ef4aa76e7b32cd64f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ConnectionConfigProviderObject: {fileID: 391807248}
   _NetworkClientConfig: {fileID: 11400000, guid: edb2274b869987444be146f26271fc2f,
     type: 2}
   _NetworkClient: {fileID: 1277662245}
+  _MessagingHub: {fileID: 623978593}
 --- !u!4 &2063880378
 Transform:
   m_ObjectHideFlags: 0

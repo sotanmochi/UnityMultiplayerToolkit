@@ -772,6 +772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 275db2669ac328f498529d2842be7f36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _IsLocalServer: 1
   _AutoInitializeOnAwake: 1
   _MessagingHub: {fileID: 282295777}
   _NetworkServer: {fileID: 738938337}

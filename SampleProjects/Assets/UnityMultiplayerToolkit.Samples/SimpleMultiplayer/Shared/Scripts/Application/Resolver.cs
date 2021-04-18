@@ -12,16 +12,10 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
 
         public void InitializeBeforeSceneLoad()
         {
-#if !UNITY_SERVER
-            IConnectionConfigProvider configProvider = _ConnectionConfigProviderObject.GetComponent<IConnectionConfigProvider>();
-            var multiplayerContext = GameObject.FindObjectOfType<MultiplayerContext>();
-            multiplayerContext.Construct(configProvider);
-#endif
-
-#if UNITY_SERVER
-            // NetworkUtility.RemoveUpdateSystemForHeadlessServer();
-            Debug.Log("NetworkUtility.RemoveUpdateSystemForHeadlessServer()");
-#endif
+// #if UNITY_SERVER
+//             // NetworkUtility.RemoveUpdateSystemForHeadlessServer();
+//             Debug.Log("NetworkUtility.RemoveUpdateSystemForHeadlessServer()");
+// #endif
         }
     }
 }
