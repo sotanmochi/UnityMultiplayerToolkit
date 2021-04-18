@@ -11,6 +11,7 @@ using MLAPI.Transports.Tasks;
 using MLAPI.Messaging;
 using MLAPI.Spawning;
 using MLAPI.Serialization.Pooled;
+using UnityMultiplayerToolkit.Shared;
 
 namespace UnityMultiplayerToolkit.MLAPIExtension
 {
@@ -47,29 +48,17 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<ulong> OnClientDisconnectedAsObservable() => _OnClientDisconnectedSubject;
         private Subject<ulong> _OnClientDisconnectedSubject = new Subject<ulong>();
 
-        public IObservable<List<NetworkObject>> OnNetworkedObjectSpawnedAsObservable() => _OnNetworkObjectSpawnedSubject;
-        private Subject<List<NetworkObject>> _OnNetworkObjectSpawnedSubject = new Subject<List<NetworkObject>>();
-
-        public IObservable<List<ulong>> OnNetworkedObjectDestroyedAsObservable() => _OnNetworkedObjectDestroyedSubject;
-        private Subject<List<ulong>> _OnNetworkedObjectDestroyedSubject = new Subject<List<ulong>>();
-
         public bool Initialized => _Initialized;
         private bool _Initialized;
 
         private ConnectionConfig _ConnectionConfig;
-        private CompositeDisposable _CompositeDisposable;
 
         void Awake()
         {
-            _CompositeDisposable = new CompositeDisposable();
-            SubscribeSpawnedObjects();
         }
 
         async void Start()
         {
-#if UNITY_SERVER
-            _AutoStart = true;
-#endif
             if (_AutoStart)
             {
                 int listeningPort = 7777;
@@ -102,7 +91,6 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
         void OnDestroy()
         {
-            _CompositeDisposable.Dispose();
             StopServer();
         }
 
@@ -207,6 +195,29 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
         }
 
+        public async void DisconnectClient(ulong clientId, string message)
+        {
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+            {
+                SendDisconnectMessageToClient(message, clientId);
+                await UniTask.DelayFrame(60);
+                NetworkManager.Singleton.DisconnectClient(clientId);
+            }
+        }
+
+        public void SendDisconnectMessageToClient(string message, ulong clientId)
+        {
+            using (PooledNetworkBuffer stream = PooledNetworkBuffer.Get())
+            {
+                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(stream))
+                {
+                    writer.WriteStringPacked(message);
+                    var clientIds = new List<ulong>{ clientId };
+                    SendMessageToClients("SendDisconnectMessageToClient", clientIds, stream);
+                }
+            }
+        }
+
         public void NotifyServerProcessDownToAllClients(string message, NetworkChannel channel = NetworkChannel.Internal)
         {
             using (PooledNetworkBuffer outputStream = PooledNetworkBuffer.Get())
@@ -219,6 +230,11 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 List<ulong> clientIds = MLAPI.NetworkManager.Singleton.ConnectedClientsList.Select(client => client.ClientId).ToList<ulong>();
                 CustomMessagingManager.SendNamedMessage("NotifyServerProcessDown", clientIds, outputStream, channel);
             }
+        }
+
+        public void SendMessageToClients(string messageName, List<ulong> clientIds, Stream dataStream, NetworkChannel channel = NetworkChannel.Internal)
+        {
+            CustomMessagingManager.SendNamedMessage(messageName, clientIds, dataStream, channel);
         }
 
         public void SendMessageToAllClients(string messageName, Stream dataStream, NetworkChannel channel = NetworkChannel.Internal)
@@ -267,41 +283,5 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
 #endregion
 
-        private void SubscribeSpawnedObjects()
-        {
-            var beforeKeys = new ulong[0];
-
-            NetworkSpawnManager.SpawnedObjects
-            .ObserveEveryValueChanged(dict => dict.Count)
-            .Skip(1)
-            .Subscribe(count => 
-            {
-                var spawnedObjKeys = NetworkSpawnManager.SpawnedObjects.Keys.Except(beforeKeys);
-                var destroyedObjKeys = beforeKeys.Except(NetworkSpawnManager.SpawnedObjects.Keys);
-
-                beforeKeys = NetworkSpawnManager.SpawnedObjects.Keys.ToArray();
-
-                List<NetworkObject> spawnedObjects = new List<NetworkObject>();
-                foreach(var key in spawnedObjKeys)
-                {
-                    if (NetworkSpawnManager.SpawnedObjects.TryGetValue(key, out NetworkObject netObject))
-                    {
-                        spawnedObjects.Add(netObject);
-                    }
-                }
-
-                List<ulong> destroyedObjectIds = destroyedObjKeys.ToList();
-
-                if (spawnedObjects.Count > 0)
-                {
-                    _OnNetworkObjectSpawnedSubject.OnNext(spawnedObjects);
-                }
-                if (destroyedObjectIds.Count > 0)
-                {
-                    _OnNetworkedObjectDestroyedSubject.OnNext(destroyedObjectIds);
-                }
-            })
-            .AddTo(_CompositeDisposable);
-        }
     }
 }

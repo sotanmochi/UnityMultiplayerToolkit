@@ -42,14 +42,11 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<ulong> OnClientDisconnectedAsObservable() => _OnClientDisconnectedSubject;
         private Subject<ulong> _OnClientDisconnectedSubject = new Subject<ulong>();
 
-        public IObservable<List<NetworkObject>> OnNetworkedObjectSpawnedAsObservable() => _OnNetworkObjectSpawnedSubject;
-        private Subject<List<NetworkObject>> _OnNetworkObjectSpawnedSubject = new Subject<List<NetworkObject>>();
-
-        public IObservable<List<ulong>> OnNetworkedObjectDestroyedAsObservable() => _OnNetworkedObjectDestroyedSubject;
-        private Subject<List<ulong>> _OnNetworkedObjectDestroyedSubject = new Subject<List<ulong>>();
-
         public IObservable<string> OnReceivedServerProcessDownEventAsObservable() => _OnReceivedServerProcessDownEventSubject;
         private Subject<string> _OnReceivedServerProcessDownEventSubject = new Subject<string>();
+
+        public IObservable<string> OnReceivedDisconnectMessageAsObservable() => _OnReceivedDisconnectMessageSubject;
+        private Subject<string> _OnReceivedDisconnectMessageSubject = new Subject<string>();
 
         public bool Initialized => _Initialized;
         private bool _Initialized;
@@ -58,19 +55,17 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         private bool _Connected;
 
         private int _TimeoutSeconds = 30;
-        private CompositeDisposable _CompositeDisposable;
 
         void Awake()
         {
-            _CompositeDisposable = new CompositeDisposable();
-            SubscribeSpawnedObjects();
             CustomMessagingManager.RegisterNamedMessageHandler("NotifyServerProcessDown", OnReceivedServerProcessDownEvent);
+            CustomMessagingManager.RegisterNamedMessageHandler("SendDisconnectMessageToClient", OnReceivedDisconnectMessage);
         }
 
         void OnDestroy()
         {
             CustomMessagingManager.UnregisterNamedMessageHandler("NotifyServerProcessDown");
-            _CompositeDisposable.Dispose();
+            CustomMessagingManager.UnregisterNamedMessageHandler("SendDisconnectMessageToClient");
         }
 
         public bool Initialize(NetworkConfig networkConfig = null)
@@ -212,44 +207,16 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             }
         }
 
-#endregion
-
-        private void SubscribeSpawnedObjects()
+        private void OnReceivedDisconnectMessage(ulong sender, Stream dataStream)
         {
-            var beforeKeys = new ulong[0];
-
-            NetworkSpawnManager.SpawnedObjects
-            .ObserveEveryValueChanged(dict => dict.Count)
-            .Skip(1)
-            .Subscribe(count => 
+            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
             {
-                var spawnedObjKeys = NetworkSpawnManager.SpawnedObjects.Keys.Except(beforeKeys);
-                var destroyedObjKeys = beforeKeys.Except(NetworkSpawnManager.SpawnedObjects.Keys);
-
-                beforeKeys = NetworkSpawnManager.SpawnedObjects.Keys.ToArray();
-
-                List<NetworkObject> spawnedObjects = new List<NetworkObject>();
-                foreach(var key in spawnedObjKeys)
-                {
-                    if (NetworkSpawnManager.SpawnedObjects.TryGetValue(key, out NetworkObject netObject))
-                    {
-                        spawnedObjects.Add(netObject);
-                    }
-                }
-
-                List<ulong> destroyedObjectIds = destroyedObjKeys.ToList();
-
-                if (spawnedObjects.Count > 0)
-                {
-                    _OnNetworkObjectSpawnedSubject.OnNext(spawnedObjects);
-                }
-                if (destroyedObjectIds.Count > 0)
-                {
-                    _OnNetworkedObjectDestroyedSubject.OnNext(destroyedObjectIds);
-                }
-            })
-            .AddTo(_CompositeDisposable);
+                string message = reader.ReadStringPacked().ToString();
+                _OnReceivedDisconnectMessageSubject.OnNext(message);
+            }
         }
+
+#endregion
 
     }
 }
