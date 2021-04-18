@@ -96,6 +96,7 @@ exports.handler = async (event) => {
         IpAddress: selectedGameSession.IpAddress,
         Port: selectedGameSession.Port,
         RoomName: selectedGameSession.Name,
+        SystemUserId: playerSession.PlayerSessionId,
     };
 
     return response;

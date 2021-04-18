@@ -28,11 +28,11 @@ namespace UnityMultiplayerToolkit.Infra.AWS.Lambda
         public string IpAddress;
         public int Port;
         public string RoomName;
+        public string SystemUserId;
     }
 
     public class LambdaClient : MonoBehaviour, IConnectionConfigProvider
     {
-        [SerializeField] string _LambdaFunctionName = "ClientServiceLambda";
         [SerializeField] AWSConfig _Config;
 
         public async UniTask<bool> Initialize()
@@ -40,20 +40,15 @@ namespace UnityMultiplayerToolkit.Infra.AWS.Lambda
             return true;
         }
 
-        public async UniTask<ConnectionConfig> GetConnectionConfig(string roomName, string playerId = null)
+        public async UniTask<ConnectionConfig> GetConnectionConfig(string roomName, string playerId)
         {
-            if (string.IsNullOrEmpty(playerId))
-            {
-                playerId = System.Guid.NewGuid().ToString();
-            }
-
             RegionEndpoint regionEndpoint = RegionEndpoint.GetBySystemName(_Config.Region);
             CognitoAWSCredentials credentials = new CognitoAWSCredentials(_Config.IdentityPoolId, regionEndpoint);
 
             AmazonLambdaClient lambdaClient = new AmazonLambdaClient(credentials, regionEndpoint);
             string jsonStr = JsonUtility.ToJson(new ConnectionConfigRequest(roomName, playerId));
 
-            var response = await InvokeLambdaFunctionAsync(lambdaClient, _LambdaFunctionName, InvocationType.RequestResponse, jsonStr);
+            var response = await InvokeLambdaFunctionAsync(lambdaClient, _Config.LambdaFunctionName, InvocationType.RequestResponse, jsonStr);
             if (response.FunctionError == null)
             {
                 if (response.StatusCode == 200)
@@ -67,7 +62,7 @@ namespace UnityMultiplayerToolkit.Infra.AWS.Lambda
                     }
                     else
                     {
-                        return new ConnectionConfig(session.IpAddress, session.Port);
+                        return new ConnectionConfig(session.IpAddress, session.Port, session.SystemUserId);
                     }
                 }
             }
