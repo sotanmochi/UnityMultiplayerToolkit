@@ -31,7 +31,7 @@ namespace UnityMultiplayerToolkit.Infra.AWS.Lambda
         public string SystemUserId;
     }
 
-    public class LambdaClient : MonoBehaviour, IConnectionConfigProvider
+    public class GameLiftServiceLambdaClient : MonoBehaviour, IConnectionConfigProvider
     {
         [SerializeField] AWSConfig _Config;
 
