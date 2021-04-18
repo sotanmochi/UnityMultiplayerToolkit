@@ -7,14 +7,18 @@ namespace UnityMultiplayerToolkit.Shared
     {
         [SerializeField] ConnectionConfig _Config;
 
+        private ConnectionConfig _ConfigInstance;
+
         public async UniTask<bool> Initialize()
         {
+            _ConfigInstance = new ConnectionConfig(_Config);
             return true;
         }
-        
-        public async UniTask<ConnectionConfig> GetConnectionConfig(string roomName, string playerId = null)
+
+        public async UniTask<ConnectionConfig> GetConnectionConfig(string roomName, string userId = null)
         {
-            return _Config;
+            _ConfigInstance.SystemUserId = userId;
+            return _ConfigInstance;
         }
     }
 }

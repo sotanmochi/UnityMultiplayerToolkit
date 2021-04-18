@@ -5,6 +5,6 @@ namespace UnityMultiplayerToolkit.Shared
     public interface IConnectionConfigProvider
     {
         UniTask<bool> Initialize();
-        UniTask<ConnectionConfig> GetConnectionConfig(string roomName, string playerId = null);
+        UniTask<ConnectionConfig> GetConnectionConfig(string roomName, string userId = null);
     }
 }
