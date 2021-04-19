@@ -147,10 +147,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 282295776}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ec86d13940b6154e84ca429c593c771, type: 3}
+  m_Script: {fileID: 11500000, guid: 0348c2855eea6684eb820b2d5c39e003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _NetworkManager: {fileID: 738938337}
+  _Server: {fileID: 738938337}
 --- !u!4 &282295778
 Transform:
   m_ObjectHideFlags: 0
@@ -774,9 +774,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _IsLocalServer: 1
   _AutoInitializeOnAwake: 1
-  _MessagingHub: {fileID: 282295777}
   _NetworkServer: {fileID: 738938337}
   _GameLiftServer: {fileID: 1269711274}
+  _MessagingHub: {fileID: 282295777}
 --- !u!4 &2001164253
 Transform:
   m_ObjectHideFlags: 0
