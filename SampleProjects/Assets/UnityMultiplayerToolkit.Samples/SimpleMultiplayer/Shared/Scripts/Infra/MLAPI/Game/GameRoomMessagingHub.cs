@@ -4,7 +4,7 @@ using UnityMultiplayerToolkit.MLAPIExtension;
 
 namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared.Infra
 {
-    public class GameRoomMessagingHub : MonoBehaviour
+    public class GameRoomMessagingHub : MonoBehaviour, IGameRoomMessagingHub
     {
         [SerializeField] NetworkClient _Client;
 
