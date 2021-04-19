@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
-using UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared;
 using UnityMultiplayerToolkit.MLAPIExtension;
 // using UnityMultiplayerToolkit.Multiplayer.MLAPIExtension;
 using UnityMultiplayerToolkit.Infra.AWS.GameLift;
 
-namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
+namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Server
 {
     public class GameRoomContext : UnityEngine.MonoBehaviour
     {
         [UnityEngine.SerializeField] bool _IsLocalServer;
         [UnityEngine.SerializeField] bool _AutoInitializeOnAwake;
-        [UnityEngine.SerializeField] MessagingHub _MessagingHub;
         [UnityEngine.SerializeField] NetworkServer _NetworkServer;
         [UnityEngine.SerializeField] GameLiftServer _GameLiftServer;
+        [UnityEngine.SerializeField] GameRoomMessagingHub _MessagingHub;
 
         private Dictionary<string, NetworkClientUser> _NetworkClientUsers = new Dictionary<string, NetworkClientUser>();
 
@@ -26,7 +25,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer
             }
         }
 
-        public void Initialize(MessagingHub messagingHub, NetworkServer networkServer, GameLiftServer gameLiftServer)
+        public void Initialize(GameRoomMessagingHub messagingHub, NetworkServer networkServer, GameLiftServer gameLiftServer)
         {
             if (messagingHub == null || networkServer == null || gameLiftServer == null)
             {

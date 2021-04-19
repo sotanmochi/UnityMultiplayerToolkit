@@ -7,10 +7,14 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
     public class ServerProcessControlPresenter : MonoBehaviour
     {
         [SerializeField] ServerProcessControlView _ServerProcessControlView;
-        [SerializeField] MessagingHub _MessagingHub;
+        [SerializeField] GameObject _GameRoomMessagingHubObject;
+
+        private IGameRoomMessagingHub _MessagingHub;
 
         void Awake()
         {
+            _MessagingHub = _GameRoomMessagingHubObject.GetComponent<IGameRoomMessagingHub>();
+
             _ServerProcessControlView.OnTriggerServerProcessDownCommandAsObservable()
             .Subscribe(_ => 
             {

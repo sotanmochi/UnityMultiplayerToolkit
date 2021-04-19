@@ -16,12 +16,6 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
         public IObservable<(ulong senderId, string message)> OnReceivedTextMessageAsObservable() => _OnReceivedTextMessageSubject;
         private Subject<(ulong senderId, string message)> _OnReceivedTextMessageSubject = new Subject<(ulong senderId, string message)>();
 
-        public IObservable<MLAPIExtension.NetworkClientUser> OnReceivedPlayerEjectionAsObservable() => _OnReceivedPlayerEjectionSubject;
-        private Subject<MLAPIExtension.NetworkClientUser> _OnReceivedPlayerEjectionSubject = new Subject<MLAPIExtension.NetworkClientUser>();
-
-        public IObservable<MLAPIExtension.NetworkClientUser> OnReceivedSystemUserIdAsObservable() => _OnReceivedSystemUserIdSubject;
-        private Subject<MLAPIExtension.NetworkClientUser> _OnReceivedSystemUserIdSubject = new Subject<MLAPIExtension.NetworkClientUser>();
-
         public IObservable<string> OnReceivedDisconnectMessageAsObservable() => _OnReceivedDisconnectMessageSubject;
         private Subject<string> _OnReceivedDisconnectMessageSubject = new Subject<string>();
 
@@ -71,9 +65,6 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
         {
             if (_Server != null)
             {
-                CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_SERVER_PROCESS_DOWN_COMMAND, MessageHandler_Server_SendServerProcessDownCommand);
-                CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_PLAYER_EJECTION_COMMAND, MessageHandler_Server_SendPlayerEjectionCommand);
-                CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_SYSTEM_USERID_TO_SERVER, MessageHandler_Server_SendSystemUserIdToServer);
                 CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_SERVER, MessageHandler_Server_SendTextMessageToServer);
                 CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_ALL_CLIENTS, MessageHandler_Server_SendTextMessageToAllClients);
                 CustomMessagingManager.RegisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_CLIENTS_EXCEPT_SELF, MessageHandler_Server_SendTextMessageExceptSelf);
@@ -88,52 +79,12 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 
         void UnregisterNamedMessageHandlers()
         {
-            CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_SERVER_PROCESS_DOWN_COMMAND);
-            CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_PLAYER_EJECTION_COMMAND);
-            CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_SYSTEM_USERID_TO_SERVER);
             CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_SERVER);
             CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_ALL_CLIENTS);
             CustomMessagingManager.UnregisterNamedMessageHandler(MessagingHubConstants.SEND_TEXT_MESSAGE_TO_CLIENTS_EXCEPT_SELF);
         }
 
 #region Message Handlers for Server
-
-        private void MessageHandler_Server_SendServerProcessDownCommand(ulong senderClientId, Stream dataStream)
-        {
-            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
-            {
-                int timeSeconds = reader.ReadInt32Packed();
-                _Server.ApplicationQuit(timeSeconds);
-            }
-        }
-
-        private void MessageHandler_Server_SendPlayerEjectionCommand(ulong senderClientId, Stream dataStream)
-        {
-            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
-            {
-               string userId = reader.ReadStringPacked().ToString();
-
-                MLAPIExtension.NetworkClientUser networkClientUser = new MLAPIExtension.NetworkClientUser();
-                networkClientUser.ClientId = 0;
-                networkClientUser.UserId = userId;
-
-                _OnReceivedSystemUserIdSubject.OnNext(networkClientUser);
-            }
-        }
-
-        private void MessageHandler_Server_SendSystemUserIdToServer(ulong senderClientId, Stream dataStream)
-        {
-            using (PooledNetworkReader reader = PooledNetworkReader.Get(dataStream))
-            {
-               string userId = reader.ReadStringPacked().ToString();
-
-                MLAPIExtension.NetworkClientUser networkClientUser = new MLAPIExtension.NetworkClientUser();
-                networkClientUser.ClientId = senderClientId;
-                networkClientUser.UserId = userId;
-
-                _OnReceivedSystemUserIdSubject.OnNext(networkClientUser);
-            }
-        }
 
         private void MessageHandler_Server_SendTextMessageToServer(ulong senderClientId, Stream dataStream)
         {
@@ -211,42 +162,6 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Shared
 #endregion
 
 #region Client Method
-
-        public void SendServerProcessDownCommand(int timeSeconds)
-        {
-            using (PooledNetworkBuffer stream = PooledNetworkBuffer.Get())
-            {
-                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(stream))
-                {
-                    writer.WriteInt32Packed(timeSeconds);
-                    _Client.SendMessageToServer(MessagingHubConstants.SEND_SERVER_PROCESS_DOWN_COMMAND, stream);
-                }
-            }
-        }
-
-        public void SendPlayerEjectionCommand(string userId)
-        {
-            using (PooledNetworkBuffer stream = PooledNetworkBuffer.Get())
-            {
-                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(stream))
-                {
-                    writer.WriteStringPacked(userId);
-                    _Client.SendMessageToServer(MessagingHubConstants.SEND_PLAYER_EJECTION_COMMAND, stream);
-                }
-            }
-        }
-
-        public void SendSystemUserIdToServer(string userId)
-        {
-            using (PooledNetworkBuffer stream = PooledNetworkBuffer.Get())
-            {
-                using (PooledNetworkWriter writer = PooledNetworkWriter.Get(stream))
-                {
-                    writer.WriteStringPacked(userId);
-                    _Client.SendMessageToServer(MessagingHubConstants.SEND_SYSTEM_USERID_TO_SERVER, stream);
-                }
-            }
-        }
 
         public void SendTextMessageToServer(string message)
         {

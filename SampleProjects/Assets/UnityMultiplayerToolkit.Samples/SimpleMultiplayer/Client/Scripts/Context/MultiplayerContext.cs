@@ -11,10 +11,11 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
         [SerializeField] private GameObject _ConnectionConfigProviderObject;
         [SerializeField] private NetworkConfig _NetworkClientConfig;
         [SerializeField] private NetworkClient _NetworkClient;
-        [SerializeField] private MessagingHub _MessagingHub;
+        [SerializeField] private GameObject _GameRoomMessagingHubObject;
 
         private bool _Initialized;
         private IConnectionConfigProvider _ConnectionConfigProvider;
+        private IGameRoomMessagingHub _MessagingHub;
 
         void OnDestroy()
         {
@@ -24,6 +25,7 @@ namespace UnityMultiplayerToolkit.Samples.SimpleMultiplayer.Client
         public async UniTask<bool> Initialize()
         {
             _ConnectionConfigProvider = _ConnectionConfigProviderObject.GetComponent<IConnectionConfigProvider>();
+            _MessagingHub = _GameRoomMessagingHubObject.GetComponent<IGameRoomMessagingHub>();
             _NetworkClient.Disconnect();
 
             bool success = true;
