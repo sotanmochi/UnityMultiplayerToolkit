@@ -5,6 +5,8 @@ Assets/ThirdParty/
 Assets/ThirdParty.meta
 *Config.asset
 *Config.asset.meta
+Assets/Plugins/
+Assets/Plugins.meta
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
