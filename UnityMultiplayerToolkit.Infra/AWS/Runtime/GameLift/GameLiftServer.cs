@@ -28,7 +28,7 @@ namespace UnityMultiplayerToolkit.Infra.AWS.GameLift
             GameLiftServerAPI.Destroy();
         }
 
-        public void InitializeServerProcess(int listeningPort)
+        private void InitializeServerProcess(int listeningPort)
         {
             //InitSDK will establish a local connection with GameLift's agent to enable further communication.
             var initSDKOutcome = GameLiftServerAPI.InitSDK();
@@ -87,17 +87,19 @@ namespace UnityMultiplayerToolkit.Infra.AWS.GameLift
             }
         }
 
-        public void AcceptPlayerSession(string playerSessionId)
+        public bool AcceptPlayerSession(string playerSessionId)
         {
-            GameLiftServerAPI.AcceptPlayerSession(playerSessionId);
+            var acceptOutcome = GameLiftServerAPI.AcceptPlayerSession(playerSessionId);
+            return acceptOutcome.Success;
         }
 
-        public void RemovePlayerSession(string playerSessionId)
+        public bool RemovePlayerSession(string playerSessionId)
         {
-            GameLiftServerAPI.RemovePlayerSession(playerSessionId);
+            var disconnectOutcome = GameLiftServerAPI.RemovePlayerSession(playerSessionId);
+            return disconnectOutcome.Success;
         }
 
-        public void EndServerProcess()
+        private void EndServerProcess()
         {
             GameLiftServerAPI.ProcessEnding();
         }
