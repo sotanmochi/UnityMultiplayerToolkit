@@ -123,11 +123,11 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 unetTransport.ConnectPort = connectionConfig.Port;
                 unetTransport.ServerListenPort = connectionConfig.Port;
             }
-            else if (transport is MLAPI.Transports.Ruffles.RufflesTransport rufflesTransport)
-            {
-                rufflesTransport.ConnectAddress = connectionConfig.Address.Trim();
-                rufflesTransport.Port = (ushort)connectionConfig.Port;
-            }
+            // else if (transport is MLAPI.Transports.Ruffles.RufflesTransport rufflesTransport)
+            // {
+            //     rufflesTransport.ConnectAddress = connectionConfig.Address.Trim();
+            //     rufflesTransport.Port = (ushort)connectionConfig.Port;
+            // }
             else if (transport is MLAPI.Transports.LiteNetLib.LiteNetLibTransport liteNetLibTransport)
             {
                 liteNetLibTransport.Address = connectionConfig.Address.Trim();
