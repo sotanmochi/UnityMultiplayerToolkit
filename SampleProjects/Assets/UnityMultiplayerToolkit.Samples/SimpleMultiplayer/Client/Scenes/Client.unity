@@ -1846,7 +1846,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _FollowTarget: {fileID: 0}
   turnSpeed: 10
-  distance: 15
+  distance: 5
   hRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &1248636918
 GameObject:
