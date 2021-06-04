@@ -1,0 +1,26 @@
+{
+  "name": "com.unity.multiplayer.mlapi",
+  "displayName": "MLAPI Networking Library",
+  "version": "0.1.0",
+  "unity": "2019.4",
+  "unityRelease": "8f1",
+  "description": "This the Core Unity Mid-level API that provides core SDK for multiplayer games within unity",
+  "keywords": [
+    "unity"
+  ],
+  "type": "library",
+  "hideInEditor": false,
+  "dependencies": {
+    "com.unity.modules.ai": "1.0.0",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.nuget.mono-cecil": "1.10.1-preview.1"
+  },
+  "upmCi": {
+    "footprint": "59692e9df471d91c010eda226d07a65542d07de4"
+  },
+  "repository": {
+    "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.mlapi.git",
+    "type": "git",
+    "revision": "3e3aef6aa02c2a25359898319e5bd49d3518b57b"
+  }
+}

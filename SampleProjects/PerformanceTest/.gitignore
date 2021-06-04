@@ -1,12 +1,26 @@
+# ========================================== #
+#  Initial setting (All assets are ignored)
+# ========================================== #
+Assets/*
+
 # =========================== #
 #  Project specific settings
 # =========================== #
-Assets/ThirdParty/
-Assets/ThirdParty.meta
+!Assets/ThirdParty/
+!Assets/ThirdParty.meta
+Assets/ThirdParty/*
+
 *Config.asset
 *Config.asset.meta
+
 Assets/Plugins/
 Assets/Plugins.meta
+
+# ==================== #
+#  Third party assets
+# ==================== #
+!Assets/ThirdParty/com.unity.multiplayer.mlapi-0.1.0/
+!Assets/ThirdParty/com.unity.multiplayer.mlapi-0.1.0.meta
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
