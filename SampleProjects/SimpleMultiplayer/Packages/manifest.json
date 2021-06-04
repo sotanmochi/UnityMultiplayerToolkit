@@ -1,8 +1,10 @@
 {
   "dependencies": {
-    "jp.sotanmochi.unity-multiplayer-toolkit.multiplayer.shared": "file:../../UnityMultiplayerToolkit.Shared",
-    "jp.sotanmochi.unity-multiplayer-toolkit.mlapi": "file:../../UnityMultiplayerToolkit.Multiplayer/MLAPIExtension",
-    "jp.sotanmochi.unity-multiplayer-toolkit.infra.aws": "file:../../UnityMultiplayerToolkit.Infra/AWS",
+    "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.2.5",
+    "jp.sotanmochi.unity-multiplayer-toolkit.multiplayer.shared": "file:../../../UnityMultiplayerToolkit.Shared",
+    "jp.sotanmochi.unity-multiplayer-toolkit.mlapi": "file:../../../UnityMultiplayerToolkit.Multiplayer/MLAPIExtension",
+    "jp.sotanmochi.unity-multiplayer-toolkit.infra.aws": "file:../../../UnityMultiplayerToolkit.Infra/AWS",
     "com.mlapi.contrib.transport.litenetlib": "https://github.com/Unity-Technologies/mlapi-community-contributions.git?path=/Transports/com.mlapi.contrib.transport.litenetlib",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ide.rider": "1.1.4",
