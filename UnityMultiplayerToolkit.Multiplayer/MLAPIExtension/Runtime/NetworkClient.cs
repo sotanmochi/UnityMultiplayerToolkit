@@ -48,6 +48,15 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<string> OnReceivedDisconnectMessageAsObservable() => _OnReceivedDisconnectMessageSubject;
         private Subject<string> _OnReceivedDisconnectMessageSubject = new Subject<string>();
 
+#if MLAPI_PERFORMANCE_TEST
+        public IObservable<float> OnNetworkEarlyUpdatedAsObservable() => _OnNetworkEarlyUpdatedSubject;
+        private Subject<float> _OnNetworkEarlyUpdatedSubject = new Subject<float>();
+
+        public int ProcessedEventsPerTick => NetworkManager.Singleton.ProcessedEventsPerTick;
+        public ulong ReceivedDataBytesPerTick => NetworkManager.Singleton.ReceivedDataBytesPerTick;
+        public int MaxReceiveEventsPerTickRate => NetworkManager.Singleton.MaxReceiveEventsPerTickRate;
+#endif
+
         public bool Initialized => _Initialized;
         private bool _Initialized;
 
@@ -148,6 +157,10 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
 
+#if MLAPI_PERFORMANCE_TEST
+            NetworkManager.Singleton.OnNetworkEarlyUpdated += OnNetworkEarlyUpdated;
+#endif
+
             // Start client
             NetworkManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes(connectionConfig.Key);
             SocketTasks tasks = NetworkManager.Singleton.StartClient();
@@ -166,6 +179,10 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
                 // Remove callbacks
                 NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+
+#if MLAPI_PERFORMANCE_TEST
+                NetworkManager.Singleton.OnNetworkEarlyUpdated -= OnNetworkEarlyUpdated;
+#endif
             }
             else
             {
@@ -187,6 +204,13 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         }
 
 #region Callbacks
+
+#if MLAPI_PERFORMANCE_TEST
+        private void OnNetworkEarlyUpdated(float networkTime)
+        {
+            _OnNetworkEarlyUpdatedSubject.OnNext(networkTime);
+        }
+#endif
 
         private void OnClientConnected(ulong clientId)
         {
