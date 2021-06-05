@@ -1,5 +1,26 @@
 {
   "dependencies": {
+    "com.cysharp.unitask": {
+      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.2.5",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "72e620d169841f32bc6110ad0e12ee9eae6f1aaf"
+    },
+    "com.mlapi.contrib.transport.litenetlib": {
+      "version": "https://github.com/Unity-Technologies/mlapi-community-contributions.git?path=/Transports/com.mlapi.contrib.transport.litenetlib",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "e47ee18972b110a689c23d6ffc0e5994d18e9eb2"
+    },
+    "com.neuecc.unirx": {
+      "version": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "284d5c50d3f1ddd9fa7df3d382ea904732a9c2ff"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -120,6 +141,18 @@
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
+    },
+    "jp.sotanmochi.unity-multiplayer-toolkit.mlapi": {
+      "version": "file:../../../UnityMultiplayerToolkit.Multiplayer/MLAPIExtension",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "jp.sotanmochi.unity-multiplayer-toolkit.multiplayer.shared": {
+      "version": "file:../../../UnityMultiplayerToolkit.Shared",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
     },
     "nuget.mono-cecil": {
       "version": "0.1.6-preview",
