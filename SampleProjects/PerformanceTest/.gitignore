@@ -27,8 +27,8 @@ Assets/Plugins.meta
 # =========================================== #
 #  Project specific assets and my own assets
 # =========================================== #
-# !Assets/PerformanceTest/
-# !Assets/PerformanceTest.meta
+!Assets/PerformanceTest/
+!Assets/PerformanceTest.meta
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
