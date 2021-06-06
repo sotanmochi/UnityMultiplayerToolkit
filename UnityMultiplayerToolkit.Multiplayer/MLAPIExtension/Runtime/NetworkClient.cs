@@ -164,9 +164,17 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
             // Start client
             NetworkManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes(connectionConfig.Key);
             SocketTasks tasks = NetworkManager.Singleton.StartClient();
-            await UniTask.WaitUntil(() => tasks.IsDone).Timeout(TimeSpan.FromSeconds(_TimeoutSeconds));
 
-            return _Connected = tasks.Success;
+            try
+            {
+                await UniTask.WaitUntil(() => _Connected).Timeout(TimeSpan.FromSeconds(_TimeoutSeconds));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[MLAPI Extension] Connection timed out. {e.Message}");
+            }
+
+            return _Connected;
         }
 
         public void Disconnect()
@@ -214,11 +222,13 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 
         private void OnClientConnected(ulong clientId)
         {
+            _Connected = true;
             _OnClientConnectedSubject.OnNext(clientId);
         }
 
         private void OnClientDisconnected(ulong clientId)
         {
+            _Connected = false;
             _OnClientDisconnectedSubject.OnNext(clientId);
         }
 
