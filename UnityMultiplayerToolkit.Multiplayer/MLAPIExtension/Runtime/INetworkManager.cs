@@ -12,9 +12,7 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         IObservable<ulong> OnClientConnectedAsObservable();
         IObservable<ulong> OnClientDisconnectedAsObservable();
 #if MLAPI_PERFORMANCE_TEST
-        IObservable<float> OnNetworkEarlyUpdatedAsObservable();
-        int ProcessedEventsPerTick { get; }
-        ulong ReceivedDataBytesPerTick { get; }
+        IObservable<(float networkTime, int processedEventsPerTick, ulong receivedDataBytesPerTick)> OnNetworkEarlyUpdatedAsObservable();
         int MaxReceiveEventsPerTickRate { get; }
 #endif
     }

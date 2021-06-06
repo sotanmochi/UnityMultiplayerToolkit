@@ -35,12 +35,12 @@ namespace UnityMultiplayerToolkit.PerformanceTest
             if (_networkManager != null)
             {
                 _networkManager.OnNetworkEarlyUpdatedAsObservable()
-                .Subscribe(networkTime => 
+                .Subscribe(data => 
                 {
-                    _processedEvents += _networkManager.ProcessedEventsPerTick;
-                    _receivedDataKiloBytes += _networkManager.ReceivedDataBytesPerTick / 1024f;
-                    _processedEventsQueue.Enqueue((networkTime, _networkManager.ProcessedEventsPerTick));
-                    _receivedDataBytesQueue.Enqueue((networkTime, _networkManager.ReceivedDataBytesPerTick));
+                    _processedEvents += data.processedEventsPerTick;
+                    _receivedDataKiloBytes += data.receivedDataBytesPerTick / 1024f;
+                    _processedEventsQueue.Enqueue((data.networkTime, data.processedEventsPerTick));
+                    _receivedDataBytesQueue.Enqueue((data.networkTime, data.receivedDataBytesPerTick));
                 })
                 .AddTo(this);
             }

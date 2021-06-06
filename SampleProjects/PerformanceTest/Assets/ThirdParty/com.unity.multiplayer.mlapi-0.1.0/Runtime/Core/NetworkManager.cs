@@ -34,15 +34,10 @@ namespace MLAPI
         //////////////////////////////////////////////////////////////
         // Performance Testing Metrics
         //////////////////////////////////////////////////////////////
-        public event Action<float> OnNetworkEarlyUpdated = null;
-
-        public int ProcessedEventsPerTick => _processedEventsPerTick;
-        private int _processedEventsPerTick = 0;
-
-        public ulong ReceivedDataBytesPerTick => _receivedDataBytesPerTick;
-        private ulong _receivedDataBytesPerTick = 0;
-
+        public event Action<float, int, ulong> OnNetworkEarlyUpdated = null;
         public int MaxReceiveEventsPerTickRate => NetworkConfig.MaxReceiveEventsPerTickRate;
+        private int _processedEventsPerTick = 0;
+        private ulong _receivedDataBytesPerTick = 0;
         //////////////////////////////////////////////////////////////
 
         [Browsable(false)]
@@ -653,6 +648,9 @@ namespace MLAPI
             {
                 case NetworkUpdateStage.EarlyUpdate:
                     OnNetworkEarlyUpdate();
+                    OnNetworkEarlyUpdated?.Invoke(NetworkTime, _processedEventsPerTick, _receivedDataBytesPerTick);
+                    _processedEventsPerTick = 0;
+                    _receivedDataBytesPerTick = 0;
                     break;
                 case NetworkUpdateStage.PreUpdate:
                     OnNetworkPreUpdate();
@@ -688,9 +686,6 @@ namespace MLAPI
                     //If we are in loopback mode, we don't need to touch the transport
                     if (!isLoopBack)
                     {
-                        _processedEventsPerTick = 0;
-                        _receivedDataBytesPerTick = 0;
-
                         NetworkEvent networkEvent;
                         int processedEvents = 0;
                         do
@@ -699,19 +694,11 @@ namespace MLAPI
                             networkEvent = NetworkConfig.NetworkTransport.PollEvent(out ulong clientId, out NetworkChannel networkChannel, out ArraySegment<byte> payload, out float receiveTime);
                             HandleRawTransportPoll(networkEvent, clientId, networkChannel, payload, receiveTime);
 
-                            if (networkEvent != NetworkEvent.Nothing)
-                            {
-                                _processedEventsPerTick++;
-                                _receivedDataBytesPerTick += (ulong)payload.Count;
-                            }
-
                             // Only do another iteration if: there are no more messages AND (there is no limit to max events or we have processed less than the maximum)
                         } while (IsListening && (networkEvent != NetworkEvent.Nothing) && (NetworkConfig.MaxReceiveEventsPerTickRate <= 0 || processedEvents < NetworkConfig.MaxReceiveEventsPerTickRate));
                     }
 
                     m_LastReceiveTickTime = NetworkTime;
-
-                    OnNetworkEarlyUpdated?.Invoke(NetworkTime);
 
 #if !UNITY_2020_2_OR_NEWER
                     NetworkProfiler.EndTick();
@@ -847,6 +834,12 @@ namespace MLAPI
         {
             PerformanceDataManager.Increment(ProfilerConstants.ByteReceived, payload.Count);
             ProfilerStatManager.BytesRcvd.Record(payload.Count);
+
+            if (networkEvent != NetworkEvent.Nothing)
+            {
+                _processedEventsPerTick++;
+                _receivedDataBytesPerTick += (ulong)payload.Count;
+            }
 
             switch (networkEvent)
             {

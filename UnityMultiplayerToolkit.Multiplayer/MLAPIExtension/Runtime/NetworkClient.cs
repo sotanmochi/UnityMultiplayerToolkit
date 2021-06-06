@@ -49,11 +49,11 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         private Subject<string> _OnReceivedDisconnectMessageSubject = new Subject<string>();
 
 #if MLAPI_PERFORMANCE_TEST
-        public IObservable<float> OnNetworkEarlyUpdatedAsObservable() => _OnNetworkEarlyUpdatedSubject;
-        private Subject<float> _OnNetworkEarlyUpdatedSubject = new Subject<float>();
+        public IObservable<(float networkTime, int processedEventsPerTick, ulong receivedDataBytesPerTick)> OnNetworkEarlyUpdatedAsObservable() 
+            => _OnNetworkEarlyUpdatedSubject;
+        private Subject<(float networkTime, int processedEventsPerTick, ulong receivedDataBytesPerTick)> _OnNetworkEarlyUpdatedSubject 
+            = new Subject<(float networkTime, int processedEventsPerTick, ulong receivedDataBytesPerTick)>();
 
-        public int ProcessedEventsPerTick => NetworkManager.Singleton.ProcessedEventsPerTick;
-        public ulong ReceivedDataBytesPerTick => NetworkManager.Singleton.ReceivedDataBytesPerTick;
         public int MaxReceiveEventsPerTickRate => NetworkManager.Singleton.MaxReceiveEventsPerTickRate;
 #endif
 
@@ -206,9 +206,9 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
 #region Callbacks
 
 #if MLAPI_PERFORMANCE_TEST
-        private void OnNetworkEarlyUpdated(float networkTime)
+        private void OnNetworkEarlyUpdated(float networkTime, int processedEventsPerTick, ulong receivedDataBytesPerTick)
         {
-            _OnNetworkEarlyUpdatedSubject.OnNext(networkTime);
+            _OnNetworkEarlyUpdatedSubject.OnNext((networkTime, processedEventsPerTick, receivedDataBytesPerTick));
         }
 #endif
 
