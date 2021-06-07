@@ -16,6 +16,7 @@ namespace UnityMultiplayerToolkit.PerformanceTest
         {
             _view.SetApplicationFrameRate("[fps]", _frameRateMonitor.FramePerSecond);
 
+            _view.SetConnectedClientCount(_networkPerformanceMonitor.ConnectedClientCount);
             _view.SetProcessedEvents(_networkPerformanceMonitor.ProcessedEvents);
             _view.SetReceivedDataSize("[KB]", _networkPerformanceMonitor.ReceivedDataKiloBytes);
             _view.SetProcessedEventsPerUnitTime("[Second]", _networkPerformanceMonitor.ProcessedEventsPerSecond);
