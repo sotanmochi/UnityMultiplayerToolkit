@@ -19,7 +19,8 @@ namespace UnityMultiplayerToolkit.PerformanceTest
         public float ReceivedDataKiloBytes => _receivedDataKiloBytes;
         private float _receivedDataKiloBytes;
 
-        public int MaxReceiveEventsPerTickRate => _networkManager.MaxReceiveEventsPerTickRate;
+        public int MaxReceiveEventsPerTickRate => (_networkManager != null) ? _networkManager.MaxReceiveEventsPerTickRate : 0;
+        public int ConnectedClientCount => (_networkManager != null) ? _networkManager.ConnectedClientCount : -1;
 
         private readonly FixedSizeQueue<(float networkTime, int value)> _processedEventsQueue
             = new FixedSizeQueue<(float networkTime, int value)>(64);

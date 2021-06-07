@@ -48,13 +48,15 @@ namespace UnityMultiplayerToolkit.MLAPIExtension
         public IObservable<string> OnReceivedDisconnectMessageAsObservable() => _OnReceivedDisconnectMessageSubject;
         private Subject<string> _OnReceivedDisconnectMessageSubject = new Subject<string>();
 
+        public int ConnectedClientCount => (NetworkManager.Singleton != null) ? NetworkManager.Singleton.ConnectedClientsList.Count : -1;
+
 #if MLAPI_PERFORMANCE_TEST
         public IObservable<(float networkTime, int processedEventsPerTick, ulong receivedDataBytesPerTick)> OnNetworkEarlyUpdatedAsObservable() 
             => _OnNetworkEarlyUpdatedSubject;
         private Subject<(float networkTime, int processedEventsPerTick, ulong receivedDataBytesPerTick)> _OnNetworkEarlyUpdatedSubject 
             = new Subject<(float networkTime, int processedEventsPerTick, ulong receivedDataBytesPerTick)>();
 
-        public int MaxReceiveEventsPerTickRate => NetworkManager.Singleton.MaxReceiveEventsPerTickRate;
+        public int MaxReceiveEventsPerTickRate => (NetworkManager.Singleton != null) ? NetworkManager.Singleton.MaxReceiveEventsPerTickRate : 0;
 #endif
 
         public bool Initialized => _Initialized;
