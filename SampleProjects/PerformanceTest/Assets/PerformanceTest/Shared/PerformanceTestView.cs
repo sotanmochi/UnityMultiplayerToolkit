@@ -1,11 +1,13 @@
 using UnityEngine;
 using TMPro;
+using Cysharp.Text;
 
 namespace UnityMultiplayerToolkit.PerformanceTest
 {
     public class PerformanceTestView : MonoBehaviour
     {
         [SerializeField] TMP_Text _applicationFrameRate;
+        [SerializeField] TMP_Text _connectedClientCount;
         [SerializeField] TMP_Text _processedEvents;
         [SerializeField] TMP_Text _receivedDataSize;
         [SerializeField] TMP_Text _processedEventsPerUnitTime;
@@ -21,74 +23,67 @@ namespace UnityMultiplayerToolkit.PerformanceTest
 
         public void SetApplicationFrameRate(string unit, float value)
         {
-            string text = $"Application Frame Rate: {value:F2} {unit}";
-            _applicationFrameRate.SetText(text);
+            _applicationFrameRate.SetTextFormat("Application Frame Rate: {0:F2} {1}", value, unit);
+        }
+
+        public void SetConnectedClientCount(int value)
+        {
+            _connectedClientCount.SetTextFormat("Connected Client Count: {0}", value);
         }
 
         public void SetProcessedEvents(float processedEvents)
         {
-            string text = $"Processed Events: {processedEvents}";
-            _processedEvents.SetText(text);
+            _processedEvents.SetTextFormat("Processed Events: {0}", processedEvents);
         }
 
         public void SetReceivedDataSize(string unitOfDataSize, float receivedDataSize)
         {
-            string text = $"Received Data Size: {receivedDataSize} {unitOfDataSize}";
-            _receivedDataSize.SetText(text);
+            _receivedDataSize.SetTextFormat("Received Data Size: {0} {1}", receivedDataSize, unitOfDataSize);
         }
 
         public void SetProcessedEventsPerUnitTime(string unitTime, float processedEvents)
         {
-            string text = $"Processed Events Per {unitTime}: {processedEvents}";
-            _processedEventsPerUnitTime.SetText(text);
+            _processedEventsPerUnitTime.SetTextFormat("Processed Events Per {0}: {1}", unitTime, processedEvents);
         }
 
         public void SetReceivedDataSizePerUnitTime(string unitTime, string unitOfDataSize, float receivedDataSize)
         {
-            string text = $"Received Data Size Per {unitTime}: {receivedDataSize} {unitOfDataSize}";
-            _receivedDataSizePerUnitTime.SetText(text);
+            _receivedDataSizePerUnitTime.SetTextFormat("Received Data Size Per {0}: {1} {2}", unitTime, receivedDataSize, unitOfDataSize);
         }
 
         public void SetMaxReceiveEventsRate(string unitTime, float maxReceiveEventsRate)
         {
-            string text = $"Max Receive Events Per {unitTime}: {maxReceiveEventsRate}";
-            _maxReceiveEventsRate.SetText(text);
+            _maxReceiveEventsRate.SetTextFormat("Max Receive Events Per {0}: {1}", unitTime, maxReceiveEventsRate);
         }
 
         public void SetCGCollectCount(int value)
         {
-            string text = $"GC Collect Count: {value}";
-            _gcCollectCount.SetText(text);
+            _gcCollectCount.SetTextFormat("GC Collect Count: {0}", value);
         }
 
         public void SetTotalAllocatedMemory(string unitOfDataSize, float value)
         {
-            string text = $"Total Allocated Memory: {value} {unitOfDataSize}";
-            _totalAllocatedMemory.SetText(text);
+            _totalAllocatedMemory.SetTextFormat("Total Allocated Memory: {0} {1}", value, unitOfDataSize);
         }
 
         public void SetTotalUnusedReservedMemory(string unitOfDataSize, float value)
         {
-            string text = $"Total Unused Reserved Memory: {value} {unitOfDataSize}";
-            _totalUnusedReservedMemory.SetText(text);
+            _totalUnusedReservedMemory.SetTextFormat("Total Unused Reserved Memory: {0} {1}", value, unitOfDataSize);
         }
 
         public void SetTotalReservedMemory(string unitOfDataSize, float value)
         {
-            string text = $"Total Reserved Memory: {value} {unitOfDataSize}";
-            _totalReservedMemory.SetText(text);
+            _totalReservedMemory.SetTextFormat("Total Reserved Memory: {0} {1}", value, unitOfDataSize);
         }
 
         public void SetTotalMonoUsedSize(string unitOfDataSize, float value)
         {
-            string text = $"Total Mono Used Size: {value} {unitOfDataSize}";
-            _totalMonoUsedSize.SetText(text);
+            _totalMonoUsedSize.SetTextFormat("Total Mono Used Size: {0} {1}", value, unitOfDataSize);
         }
 
         public void SetTotalMonoHeapSize(string unitOfDataSize, float value)
         {
-            string text = $"Total Mono Heap Size: {value} {unitOfDataSize}";
-            _totalMonoHeapSize.SetText(text);
+            _totalMonoHeapSize.SetTextFormat("Total Mono Heap Size: {0} {1}", value, unitOfDataSize);
         }
     }
 }
