@@ -23,6 +23,8 @@ Assets/Plugins.meta
 !Assets/ThirdParty/com.unity.multiplayer.mlapi-0.1.0.meta
 !Assets/ThirdParty/TextMesh Pro/
 !Assets/ThirdParty/TextMesh Pro.meta
+!Assets/ThirdParty/Plugins/
+!Assets/ThirdParty/Plugins.meta
 
 # =========================================== #
 #  Project specific assets and my own assets
