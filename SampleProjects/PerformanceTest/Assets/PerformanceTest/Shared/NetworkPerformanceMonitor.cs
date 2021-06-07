@@ -32,7 +32,11 @@ namespace UnityMultiplayerToolkit.PerformanceTest
 
         void Awake()
         {
-            _networkManager = _networkManagerObject.GetComponent<INetworkManager>();
+            if (_networkManagerObject != null)
+            {
+                _networkManager = _networkManagerObject.GetComponent<INetworkManager>();
+            }
+
             if (_networkManager != null)
             {
                 _networkManager.OnNetworkEarlyUpdatedAsObservable()
